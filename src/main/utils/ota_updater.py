@@ -142,7 +142,7 @@ class OTAUpdater:
             elif file['type'] == 'dir':
                 path = self.modulepath(self.new_version_dir + '/' + file['path'].replace(self.main_dir + '/', ''))
                 os.mkdir(path)
-                self._download_all_files(version, file['name'])
+                self._download_all_files(version, sub_dir + '/' + file['name'])
 
         file_list.close()
 
