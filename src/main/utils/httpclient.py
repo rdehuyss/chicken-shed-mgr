@@ -1,0 +1,159 @@
+import usocket, os
+
+class Response:
+
+    def __init__(self, socket, saveToFile=None):
+        self.socket = socket
+        self.saveToFile = saveToFile
+        self.encoding = 'utf-8'
+        self._cached = None
+        if not saveToFile == None:
+            CHUNK_SIZE = 1024 # bytes
+            with open(saveToFile, 'w') as outfile:
+                data = self.socket.recv(CHUNK_SIZE)
+                while data:
+                    outfile.write(data)
+                    data = self.socket.recv(CHUNK_SIZE)
+                
+                self.socket.close()
+                self.socket = None
+
+    def close(self):
+        if self.socket:
+            self.socket.close()
+            self.socket = None
+        self._cached = None
+
+    @property
+    def content(self):
+        if self.saveToFile is not None:
+            raise SystemError('You cannot get the content from the response as you decided to save it in ' + self.saveToFile)
+
+        if self._cached is None:
+            try:
+                self._cached = self.socket.read()
+            finally:
+                self.socket.close()
+                self.socket = None
+        return self._cached
+
+    @property
+    def text(self):
+        return str(self.content, self.encoding)
+
+    def json(self):
+        import ujson
+        return ujson.loads(self.content)
+
+
+class HttpClient:
+
+    def __init__(self, headers={}):
+        self._headers = headers
+
+    def request(self, method, url, data=None, json=None, file=None, saveToFile=None, headers={}, stream=None):
+        def _write_headers(sock, _headers):
+            for k in _headers:
+                sock.write(b'{}: {}\r\n'.format(k, _headers[k]))
+
+        try:
+            proto, dummy, host, path = url.split('/', 3)
+        except ValueError:
+            proto, dummy, host = url.split('/', 2)
+            path = ''
+        if proto == 'http:':
+            port = 80
+        elif proto == 'https:':
+            import ussl
+            port = 443
+        else:
+            raise ValueError('Unsupported protocol: ' + proto)
+
+        if ':' in host:
+            host, port = host.split(':', 1)
+            port = int(port)
+
+        ai = usocket.getaddrinfo(host, port, 0, usocket.SOCK_STREAM)
+        ai = ai[0]
+
+        s = usocket.socket(ai[0], ai[1], ai[2])
+        try:
+            s.connect(ai[-1])
+            if proto == 'https:':
+                s = ussl.wrap_socket(s, server_hostname=host)
+            s.write(b'%s /%s HTTP/1.0\r\n' % (method, path))
+            if not 'Host' in headers:
+                s.write(b'Host: %s\r\n' % host)
+            # Iterate over keys to avoid tuple alloc
+            _write_headers(s, self._headers)
+            _write_headers(s, headers)
+
+            # add user agent
+            s.write(b'User-Agent: MicroPython Client\r\n')
+            if json is not None:
+                assert data is None
+                import ujson
+                data = ujson.dumps(json)
+                s.write(b'Content-Type: application/json\r\n')
+            
+            totalLen = -1
+            if file is not None:
+                totalLen = os.stat(file)[6]
+            elif data:
+                totalLen = len(data)
+                
+            s.write(b'Content-Length: %d\r\n' % totalLen)
+            s.write(b'\r\n')
+
+            if file is not None:
+                with open(file, 'r') as file_object:
+                    for line in file_object:
+                        s.write(line + '\n')
+            elif data:
+                s.write(data)
+
+            l = s.readline()
+            # print(l)
+            l = l.split(None, 2)
+            status = int(l[1])
+            reason = ''
+            if len(l) > 2:
+                reason = l[2].rstrip()
+            while True:
+                l = s.readline()
+                if not l or l == b'\r\n':
+                    break
+                # print(l)
+                if l.startswith(b'Transfer-Encoding:'):
+                    if b'chunked' in l:
+                        raise ValueError('Unsupported ' + l)
+                elif l.startswith(b'Location:') and not 200 <= status <= 299:
+                    raise NotImplementedError('Redirects not yet supported')
+
+
+        except OSError:
+            s.close()
+            raise
+
+        resp = Response(s, saveToFile)
+        resp.status_code = status
+        resp.reason = reason
+        return resp
+
+    def head(self, url, **kw):
+        return self.request('HEAD', url, **kw)
+
+    def get(self, url, **kw):
+        return self.request('GET', url, **kw)
+
+    def post(self, url, **kw):
+        return self.request('POST', url, **kw)
+
+    def put(self, url, **kw):
+        return self.request('PUT', url, **kw)
+
+    def patch(self, url, **kw):
+        return self.request('PATCH', url, **kw)
+
+    def delete(self, url, **kw):
+        return self.request('DELETE', url, **kw)

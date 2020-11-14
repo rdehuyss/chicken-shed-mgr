@@ -1,0 +1,5 @@
+.pytest_cache
+.vscode
+M5Stack_MicroPython
+__pycache__
+secrets.py

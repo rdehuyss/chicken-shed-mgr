@@ -1,0 +1,18 @@
+{
+    "door_opener": {
+        "open_relay": 2,
+        "close_relay": 5,
+        "open_at_hour": 10,
+        "close_at_hour_before_sunset": -1
+    },
+    "light": {
+        "relay": 16,
+        "threshold": 50,
+        "from_hour": 6,
+        "to_hour": 22 
+    },
+    "fence": {
+        "relay": 17,
+        "on_when": "always"
+    }
+}
