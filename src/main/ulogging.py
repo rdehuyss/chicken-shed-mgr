@@ -48,6 +48,7 @@ class Logger:
             else:
                 logMsg = "{} - {}:{} - {}".format(utime.strftime('%H:%M:%S', utime.localtime()), levelname, self.name, msg)
             
+            print(logMsg)
             if os.stat("logs.log")[6] > 512000:
                 os.remove("logs.log")
             with open("logs.log", "a") as file_object:

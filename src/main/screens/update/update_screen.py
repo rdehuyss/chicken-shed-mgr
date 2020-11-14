@@ -1,10 +1,7 @@
-import machine, utime
+import machine, utime, main.secrets as secrets
 from m5stack import *
 from ..abstract_screen import AbstractScreen
 from ..abstract_menu_screen import AbstractMenuScreen
-
-WIFI_SSID = 'AndroidRD'
-WIFI_PASSWORD = 'internetisvaniedereen'
 
 class UpdateScreen1(AbstractMenuScreen):
 
@@ -33,8 +30,8 @@ class UpdateScreen2(AbstractMenuScreen):
     def printHeader(self):
         lcd.font(lcd.FONT_DejaVu18, transparent=True)
         lcd.println('Please create a WIFI AP using\nyour phone:')
-        lcd.println('- SSID = ' + str(WIFI_SSID))
-        lcd.println('- Pw = ' + str(WIFI_PASSWORD))
+        lcd.println('- SSID = ' + str(secrets.WIFI_SSID))
+        lcd.println('- Pw = ' + str(secrets.WIFI_PASSWORD))
         
 
     def getMenuItems(self):
@@ -54,7 +51,7 @@ class UpdateScreen3(AbstractScreen):
         import network
         sta_if = network.WLAN(network.STA_IF)
         sta_if.active(True)
-        sta_if.connect(WIFI_SSID, WIFI_PASSWORD)
+        sta_if.connect(secrets.WIFI_SSID, secrets.WIFI_PASSWORD)
 
         startTime = utime.time()
         while not sta_if.isconnected():
@@ -63,7 +60,7 @@ class UpdateScreen3(AbstractScreen):
 
             lcd.print('.')
             utime.sleep(2)
-            sta_if.connect(WIFI_SSID, WIFI_PASSWORD)
+            sta_if.connect(secrets.WIFI_SSID, secrets.WIFI_PASSWORD)
 
         if sta_if.isconnected():
             self.resetScreen()

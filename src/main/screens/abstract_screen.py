@@ -18,7 +18,7 @@ class AbstractScreen:
         lcd.font(lcd.FONT_Tooney, transparent=True)
         lcd.print('speckbosch', lcd.CENTER, 10)
         lcd.font(lcd.FONT_DejaVu24, transparent=True)
-        lcd.print('Chicken Shed Mgr {:. 2f}'.format(self._getVersion()), lcd.CENTER, 45)
+        lcd.print('Chicken Shed Mgr {}'.format(self._getVersion()), lcd.CENTER, 45)
 
     def hide(self):
         self.isShown = False
