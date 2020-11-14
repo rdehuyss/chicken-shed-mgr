@@ -10,12 +10,13 @@ class OTAUpdater:
     optimized for low power usage.
     """
 
-    def __init__(self, github_repo, module='', main_dir='main', new_version_dir='next', headers={}):
+    def __init__(self, github_repo, github_src_dir='', module='', main_dir='main', new_version_dir='next', headers={}):
         self.http_client = HttpClient(headers=headers)
         self.github_repo = github_repo.rstrip('/').replace('https://github.com', 'https://api.github.com/repos')
+        self.github_src_dir = '' if len(github_src_dir) < 1 else github_src_dir.rstrip('/') + '/'
+        self.module = module.rstrip('/')
         self.main_dir = main_dir
         self.new_version_dir = new_version_dir
-        self.module = module.rstrip('/')
 
     def check_for_update_to_install_during_next_reboot(self) -> bool:
         """Function which will check the GitHub repo if there is a newer version available.
@@ -127,15 +128,16 @@ class OTAUpdater:
         return version
 
     def _download_all_files(self, version, sub_dir = ''):
-        root_url = self.github_repo + '/contents/' + self.main_dir + sub_dir
-        print(root_url)
+        root_url = self.github_repo + '/contents/' + self.github_src_dir + self.main_dir + sub_dir
+        print('RootUrl', root_url)
         file_list = self.http_client.get(root_url + '?ref=refs/tags/' + version)
-        print(file_list)
+        print('FileList', file_list)
         for file in file_list.json():
             print(file)
             if file['type'] == 'file':
                 download_url = file['download_url']
                 download_path = self.modulepath(self.new_version_dir + '/' + file['path'].replace(self.main_dir + '/', ''))
+                print('Download path', download_path)
                 self._download_file(download_url.replace('refs/tags/', ''), download_path)
             elif file['type'] == 'dir':
                 path = self.modulepath(self.new_version_dir + '/' + file['path'].replace(self.main_dir + '/', ''))
