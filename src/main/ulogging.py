@@ -2,7 +2,7 @@ import utime, os
 
 CRITICAL = 50
 ERROR    = 40
-WARNING  = 30
+WARN  = 30
 INFO     = 20
 DEBUG    = 10
 NOTSET   = 0
@@ -10,7 +10,7 @@ NOTSET   = 0
 _level_dict = {
     CRITICAL: "CRIT",
     ERROR: "ERROR",
-    WARNING: "WARN",
+    WARN: "WARN",
     INFO: "INFO",
     DEBUG: "DEBUG",
 }
@@ -60,8 +60,8 @@ class Logger:
     def info(self, msg, *args):
         self.log(INFO, msg, *args)
 
-    def warning(self, msg, *args):
-        self.log(WARNING, msg, *args)
+    def warn(self, msg, *args):
+        self.log(WARN, msg, *args)
 
     def error(self, msg, *args):
         self.log(ERROR, msg, *args)
@@ -87,3 +87,9 @@ def info(msg, *args):
 
 def debug(msg, *args):
     getLogger().debug(msg, *args)
+
+def warn(msg, *args):
+    getLogger().warn(msg, *args)
+
+def error(msg, *args):
+    getLogger().error(msg, *args)
