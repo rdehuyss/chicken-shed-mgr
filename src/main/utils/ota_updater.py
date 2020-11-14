@@ -1,10 +1,8 @@
 # 1000 x dank aan Evelien die mijn in deze tijden gesteund heeft
 # ohja, en ook een dikke merci aan tante suker (Jana Dej.) die super voor onze Otis zorgt!
 
-import os
-import machine
-from httpclient import HttpClient
-
+import machine, os
+from .httpclient import HttpClient
 
 class OTAUpdater:
     """

@@ -7,7 +7,7 @@ class Response:
         self.saveToFile = saveToFile
         self.encoding = 'utf-8'
         self._cached = None
-        if not saveToFile == None:
+        if saveToFile is not None:
             CHUNK_SIZE = 1024 # bytes
             with open(saveToFile, 'w') as outfile:
                 data = self.socket.recv(CHUNK_SIZE)
@@ -95,22 +95,19 @@ class HttpClient:
                 import ujson
                 data = ujson.dumps(json)
                 s.write(b'Content-Type: application/json\r\n')
-            
-            totalLen = -1
-            if file is not None:
-                totalLen = os.stat(file)[6]
-            elif data:
-                totalLen = len(data)
-                
-            s.write(b'Content-Length: %d\r\n' % totalLen)
-            s.write(b'\r\n')
 
-            if file is not None:
+            if data:
+                s.write(b'Content-Length: %d\r\n' % len(data))
+                s.write(b'\r\n')
+                s.write(data)
+            elif file:
+                s.write(b'Content-Length: %d\r\n' % os.stat(file)[6])
+                s.write(b'\r\n')
                 with open(file, 'r') as file_object:
                     for line in file_object:
                         s.write(line + '\n')
-            elif data:
-                s.write(data)
+            else:
+                s.write(b'\r\n')
 
             l = s.readline()
             # print(l)
@@ -129,8 +126,6 @@ class HttpClient:
                         raise ValueError('Unsupported ' + l)
                 elif l.startswith(b'Location:') and not 200 <= status <= 299:
                     raise NotImplementedError('Redirects not yet supported')
-
-
         except OSError:
             s.close()
             raise
