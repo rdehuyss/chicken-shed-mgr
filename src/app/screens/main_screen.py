@@ -3,6 +3,7 @@ from m5stack import lcd, buttonA, buttonB, buttonC
 from machine import Timer
 from .abstract_screen import AbstractScreen
 from .menu_screen import MenuScreen
+from ..hardware.kippenstal import kippenstal
 
 class MainScreen(AbstractScreen):
 
@@ -12,8 +13,8 @@ class MainScreen(AbstractScreen):
 
     def show(self):
         super().show()
-        buttonA.wasPressed(self.showMenu)
 
+        self.showOptions()
         self.timer = Timer(1)
         self.timer.init(period=1000, mode=Timer.PERIODIC, callback=self.time_clock)
         
@@ -22,8 +23,15 @@ class MainScreen(AbstractScreen):
         buttonA.wasPressed(None)
         self.timer.deinit()
 
-    def showMenu(self):
-        self.menu.show()
+    def showOptions(self):
+        buttonA.wasPressed(self.menu.show)
+        lcd.image(50, 205, 'imgs/menu.bmp')
+
+        buttonB.wasPressed(kippenstal.doorOpener.toggle)
+        lcd.image(145,205,'imgs/door.bmp')
+
+        buttonC.wasPressed(kippenstal.light.toggle)
+        lcd.image(243,205,'imgs/lightbulb-outline.bmp')
 
     def time_clock(self, timer):
         currentTime = "{}".format(utime.strftime('%H:%M:%S', utime.localtime()))

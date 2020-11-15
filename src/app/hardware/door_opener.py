@@ -55,6 +55,12 @@ class DoorOpener:
         self.timer = Timer(3)
         self.timer.init(period=50000, mode=Timer.ONE_SHOT, callback=self.__stopClose)
 
+    def toggle(self):
+        if self.isOpen():
+            self.close()
+        else:
+            self.open()
+
     def isOpen(self):
         return self._isOpen
 

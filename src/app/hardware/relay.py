@@ -16,6 +16,12 @@ class Relay:
         self.value = False
         print('\t', str(self))
 
+    def toggle(self):
+        if self.isOn():
+            self.off()
+        else:
+            self.on()
+
     def isOn(self):
         return self.value
 
