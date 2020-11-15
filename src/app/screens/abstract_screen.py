@@ -34,7 +34,7 @@ class AbstractScreen:
 
     def _getVersion(self):
         try:
-            with open('main/.version') as f:
+            with open('app/.version') as f:
                 version = f.read()
                 return version
         except:

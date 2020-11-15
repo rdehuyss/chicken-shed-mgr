@@ -171,7 +171,6 @@ class OTAUpdater:
             if is_dir:
                 self._rmtree(directory + '/' + entry[0])
             else:
-                print('Deleting', entry[0])
                 os.remove(directory + '/' + entry[0])
         os.rmdir(directory)
 

@@ -8,19 +8,19 @@ class UpdateUtils:
         import machine, os
         try:
             with open('.updateRequested', "r") as updateRequested:
-                try:
-                    ulogging.info('Update requested...')
-                    UpdateUtils._connectToWifi()
-                    UpdateUtils._updateTimeUsingNTP()
-                    UpdateUtils._otaUpdate()
-                    ulogging.info('Updates finished, will reboot')
-                except BaseException as error:
-                    print(error)
-                    ulogging.error('Error updating: '+ str(error))
+                pass
 
-            os.remove('.updateRequested')
-            machine.reset()
-
+            try:
+                os.remove('.updateRequested')
+                ulogging.info('Update requested...')
+                UpdateUtils._connectToWifi()
+                UpdateUtils._updateTimeUsingNTP()
+                UpdateUtils._otaUpdate()
+                ulogging.info('Updates finished, will reboot')
+                machine.reset()
+            except BaseException as error:
+                print(error)
+                ulogging.error('Error updating: '+ str(error))
 
         except BaseException as error:
             print(error)
