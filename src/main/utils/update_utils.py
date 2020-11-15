@@ -57,7 +57,7 @@ class UpdateUtils:
     @staticmethod
     def _otaUpdate():
         from .ota_updater import OTAUpdater
-        otaUpdater = OTAUpdater('https://github.com/rdehuyss/chicken-shed-mgr', github_src_dir='src')
+        otaUpdater = OTAUpdater('https://github.com/rdehuyss/chicken-shed-mgr', github_src_dir='src', secrets_file="secrets.py")
         otaUpdater.download_update_if_available()
 
 UpdateUtils.updateIfNecessary()

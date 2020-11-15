@@ -90,16 +90,6 @@ class OTAUpdater:
                 pass
         print('network config:', sta_if.ifconfig())
 
-    def _rmtree(self, directory):
-        for entry in os.ilistdir(directory):
-            is_dir = entry[1] == 0x4000
-            if is_dir:
-                self._rmtree(directory + '/' + entry[0])
-
-            else:
-                os.remove(directory + '/' + entry[0])
-        os.rmdir(directory)
-
     def _check_for_new_version(self):
         current_version = self.get_version(self.modulepath(self.main_dir))
         latest_version = self.get_latest_version()
@@ -130,12 +120,11 @@ class OTAUpdater:
 
     def _download_new_version(self, version):
         print('Downloading version {}'.format(version))
-        self._download_all_files(self, version)
+        self._download_all_files(version)
         print('Version {} downloaded to {}'.format(version, self.modulepath(self.new_version_dir)))
 
-    def _download_all_files(self, version, sub_dir = ''):
+    def _download_all_files(self, version, sub_dir=''):
         root_url = self.github_repo + '/contents/' + self.github_src_dir + self.main_dir + sub_dir
-        print('RootUrl', root_url)
         gc.collect()
         file_list = self.http_client.get(root_url + '?ref=refs/tags/' + version)
         for file in file_list.json():
@@ -158,9 +147,9 @@ class OTAUpdater:
         if self.secrets_file:
             fromPath = self.modulepath(self.main_dir + '/' + self.secrets_file)
             toPath = self.modulepath(self.new_version_dir + '/' + self.secrets_file)
-            print('Copying secrets file from {} to {}'.format(fromPath,toPath))
+            print('Copying secrets file from {} to {}'.format(fromPath, toPath))
             self._copy(fromPath, toPath)
-            print('Copied secrets file from {} to {}'.format(fromPath,toPath))
+            print('Copied secrets file from {} to {}'.format(fromPath, toPath))
 
     def _delete_old_version(self):
         print('Deleting old version at {} ...'.format(self.modulepath(self.main_dir)))
@@ -168,9 +157,19 @@ class OTAUpdater:
         print('Deleted old version at {} ...'.format(self.modulepath(self.main_dir)))
 
     def _install_new_version(self):
-        print('Installing new version at {} ...'.format(self.modulepath(self.main_dir)
+        print('Installing new version at {} ...'.format(self.modulepath(self.main_dir)))
         os.rename(self.modulepath(self.new_version_dir), self.modulepath(self.main_dir))
-        print('Update installed (', latest_version, '), will reboot now')
+        print('Update installed, will reboot now')
+
+    def _rmtree(self, directory):
+        for entry in os.ilistdir(directory):
+            is_dir = entry[1] == 0x4000
+            if is_dir:
+                self._rmtree(directory + '/' + entry[0])
+            else:
+                print('Deleting', entry[0])
+                os.remove(directory + '/' + entry[0])
+        os.rmdir(directory)
 
     def _copy(self, fromPath, toPath):
         with open(fromPath) as fromFile:
