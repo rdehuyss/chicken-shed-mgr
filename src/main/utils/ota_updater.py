@@ -10,13 +10,14 @@ class OTAUpdater:
     optimized for low power usage.
     """
 
-    def __init__(self, github_repo, github_src_dir='', module='', main_dir='main', new_version_dir='next', headers={}):
+    def __init__(self, github_repo, github_src_dir='', module='', main_dir='main', new_version_dir='next', secrets_file=None, headers={}):
         self.http_client = HttpClient(headers=headers)
         self.github_repo = github_repo.rstrip('/').replace('https://github.com', 'https://api.github.com/repos')
         self.github_src_dir = '' if len(github_src_dir) < 1 else github_src_dir.rstrip('/') + '/'
         self.module = module.rstrip('/')
         self.main_dir = main_dir
         self.new_version_dir = new_version_dir
+        self.secrets_file = secrets_file
 
     def check_for_update_to_install_during_next_reboot(self) -> bool:
         """Function which will check the GitHub repo if there is a newer version available.
@@ -71,13 +72,10 @@ class OTAUpdater:
         if latest_version > current_version:
             print('Updating to version {}...'.format(latest_version))
             self._create_new_version_file(latest_version)
-            self._download_all_files(latest_version)
-            print('Update {} downloaded to ...'.format(latest_version, self.modulepath(self.new_version_dir)))
-            print('Deleting old version at {} ...'.format(self.modulepath(self.main_dir)))
-            self._rmtree(self.modulepath(self.main_dir))
-            print('Installing new version at {} ...'.format(self.modulepath(self.main_dir)
-            os.rename(self.modulepath(self.new_version_dir), self.modulepath(self.main_dir))
-            print('Update installed (', latest_version, '), will reboot now')
+            self._download_new_version(latest_version)
+            self._copy_secrets_file()
+            self._delete_old_version()
+            self._install_new_version()
             machine.reset()
 
     @staticmethod
@@ -130,6 +128,11 @@ class OTAUpdater:
         latest_release.close()
         return version
 
+    def _download_new_version(self, version):
+        print('Downloading version {}'.format(version))
+        self._download_all_files(self, version)
+        print('Version {} downloaded to {}'.format(version, self.modulepath(self.new_version_dir)))
+
     def _download_all_files(self, version, sub_dir = ''):
         root_url = self.github_repo + '/contents/' + self.github_src_dir + self.main_dir + sub_dir
         print('RootUrl', root_url)
@@ -150,7 +153,36 @@ class OTAUpdater:
     def _download_file(self, url, path):
         print('\tDownloading: ', url, ' to ', path)
         self.http_client.get(url, saveToFile=path)
-    
+
+    def _copy_secrets_file(self):
+        if self.secrets_file:
+            fromPath = self.modulepath(self.main_dir + '/' + self.secrets_file)
+            toPath = self.modulepath(self.new_version_dir + '/' + self.secrets_file)
+            print('Copying secrets file from {} to {}'.format(fromPath,toPath))
+            self._copy(fromPath, toPath)
+            print('Copied secrets file from {} to {}'.format(fromPath,toPath))
+
+    def _delete_old_version(self):
+        print('Deleting old version at {} ...'.format(self.modulepath(self.main_dir)))
+        self._rmtree(self.modulepath(self.main_dir))
+        print('Deleted old version at {} ...'.format(self.modulepath(self.main_dir)))
+
+    def _install_new_version(self):
+        print('Installing new version at {} ...'.format(self.modulepath(self.main_dir)
+        os.rename(self.modulepath(self.new_version_dir), self.modulepath(self.main_dir))
+        print('Update installed (', latest_version, '), will reboot now')
+
+    def _copy(self, fromPath, toPath):
+        with open(fromPath) as fromFile:
+            with open(toPath, 'w') as toFile:
+                CHUNK_SIZE = 512 # bytes
+                data = fromFile.read(CHUNK_SIZE)
+                while data:
+                    toFile.write(data)
+                    data = fromFile.read(CHUNK_SIZE)
+            toFile.close()
+        fromFile.close()
+
 
     def modulepath(self, path):
         return self.module + '/' + path if self.module else path

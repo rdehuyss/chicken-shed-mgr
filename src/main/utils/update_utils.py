@@ -29,7 +29,7 @@ class UpdateUtils:
 
     @staticmethod
     def _connectToWifi():
-        import utime, network, secrets
+        import utime, network, main.secrets as secrets
         from main.utils.httpclient import HttpClient
         ulogging.info('Connecting to WIFI')
 
