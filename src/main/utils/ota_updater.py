@@ -1,7 +1,7 @@
 # 1000 x dank aan Evelien die mijn in deze tijden gesteund heeft
 # ohja, en ook een dikke merci aan tante suker (Jana Dej.) die super voor onze Otis zorgt!
 
-import machine, os
+import machine, os, gc
 from .httpclient import HttpClient
 
 class OTAUpdater:
@@ -72,7 +72,10 @@ class OTAUpdater:
             print('Updating to version {}...'.format(latest_version))
             self._create_new_version_file(latest_version)
             self._download_all_files(latest_version)
+            print('Update {} downloaded to ...'.format(latest_version, self.modulepath(self.new_version_dir)))
+            print('Deleting old version at {} ...'.format(self.modulepath(self.main_dir)))
             self._rmtree(self.modulepath(self.main_dir))
+            print('Installing new version at {} ...'.format(self.modulepath(self.main_dir)
             os.rename(self.modulepath(self.new_version_dir), self.modulepath(self.main_dir))
             print('Update installed (', latest_version, '), will reboot now')
             machine.reset()
@@ -130,25 +133,24 @@ class OTAUpdater:
     def _download_all_files(self, version, sub_dir = ''):
         root_url = self.github_repo + '/contents/' + self.github_src_dir + self.main_dir + sub_dir
         print('RootUrl', root_url)
+        gc.collect()
         file_list = self.http_client.get(root_url + '?ref=refs/tags/' + version)
-        print('FileList', file_list)
         for file in file_list.json():
-            print(file)
+            path = self.modulepath(self.new_version_dir + '/' + file['path'].replace(self.main_dir + '/', '').replace(self.github_src_dir, ''))
             if file['type'] == 'file':
                 download_url = file['download_url']
-                download_path = self.modulepath(self.new_version_dir + '/' + file['path'].replace(self.main_dir + '/', ''))
-                print('Download path', download_path)
-                self._download_file(download_url.replace('refs/tags/', ''), download_path)
+                self._download_file(download_url.replace('refs/tags/', ''), path)
             elif file['type'] == 'dir':
-                path = self.modulepath(self.new_version_dir + '/' + file['path'].replace(self.main_dir + '/', ''))
+                print('Creating dir', path)
                 os.mkdir(path)
                 self._download_all_files(version, sub_dir + '/' + file['name'])
 
         file_list.close()
 
     def _download_file(self, url, path):
-        print('\tDownloading: ', path)
-        self.http_client.get(url, toFile=path)
+        print('\tDownloading: ', url, ' to ', path)
+        self.http_client.get(url, saveToFile=path)
+    
 
     def modulepath(self, path):
         return self.module + '/' + path if self.module else path

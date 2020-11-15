@@ -1,4 +1,4 @@
-import usocket, os
+import usocket, os, gc
 
 class Response:
 
@@ -6,36 +6,35 @@ class Response:
         self.socket = socket
         self.saveToFile = saveToFile
         self.encoding = 'utf-8'
-        self._cached = None
         if saveToFile is not None:
-            CHUNK_SIZE = 1024 # bytes
+            CHUNK_SIZE = 512 # bytes
             with open(saveToFile, 'w') as outfile:
-                data = self.socket.recv(CHUNK_SIZE)
+                data = self.socket.read(CHUNK_SIZE)
                 while data:
                     outfile.write(data)
-                    data = self.socket.recv(CHUNK_SIZE)
+                    data = self.socket.read(CHUNK_SIZE)
+                outfile.close()
                 
-                self.socket.close()
-                self.socket = None
+            self.socket.close()
+            self.socket = None
 
     def close(self):
         if self.socket:
             self.socket.close()
             self.socket = None
-        self._cached = None
 
     @property
     def content(self):
         if self.saveToFile is not None:
             raise SystemError('You cannot get the content from the response as you decided to save it in ' + self.saveToFile)
 
-        if self._cached is None:
-            try:
-                self._cached = self.socket.read()
-            finally:
-                self.socket.close()
-                self.socket = None
-        return self._cached
+        result = None
+        try:
+            result = self.socket.read()
+        finally:
+            self.socket.close()
+            self.socket = None
+        return result
 
     @property
     def text(self):
@@ -74,6 +73,8 @@ class HttpClient:
             port = int(port)
 
         ai = usocket.getaddrinfo(host, port, 0, usocket.SOCK_STREAM)
+        if len(ai) < 1:
+            raise ValueError('You are not connected to the internet...')
         ai = ai[0]
 
         s = usocket.socket(ai[0], ai[1], ai[2])
