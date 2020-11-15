@@ -1,6 +1,6 @@
 # A Chicken Shed Mgr for M5Stack using MicroPython
 
-Customer: SpeckBosch
+Customer: SpeckBosch (Biological egg farmer)
 
 ## Requirements
 ### Light:
