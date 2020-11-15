@@ -1,5 +1,5 @@
 from ...abstract_menu_screen import AbstractMenuScreen
-from main.hardware.kippenstal import kippenstal
+from app.hardware.kippenstal import kippenstal
 
 class LightTestScreen(AbstractMenuScreen):
 

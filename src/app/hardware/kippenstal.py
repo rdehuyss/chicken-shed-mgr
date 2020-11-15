@@ -1,4 +1,4 @@
-import utime, main.ulogging as ulogging
+import utime, app.ulogging as ulogging
 from machine import Timer
 from .light_sensor import LightSensor
 from .light import Light

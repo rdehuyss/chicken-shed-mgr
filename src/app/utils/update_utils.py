@@ -1,4 +1,4 @@
-import main.ulogging as ulogging
+import app.ulogging as ulogging
 
 
 class UpdateUtils:
@@ -29,8 +29,8 @@ class UpdateUtils:
 
     @staticmethod
     def _connectToWifi():
-        import utime, network, main.secrets as secrets
-        from main.utils.httpclient import HttpClient
+        import utime, network, app.secrets as secrets
+        from app.utils.httpclient import HttpClient
         ulogging.info('Connecting to WIFI')
 
         sta_if = network.WLAN(network.STA_IF)
@@ -57,7 +57,7 @@ class UpdateUtils:
     @staticmethod
     def _otaUpdate():
         from .ota_updater import OTAUpdater
-        otaUpdater = OTAUpdater('https://github.com/rdehuyss/chicken-shed-mgr', github_src_dir='src', secrets_file="secrets.py")
+        otaUpdater = OTAUpdater('https://github.com/rdehuyss/chicken-shed-mgr', github_src_dir='src', main_dir='app', secrets_file="secrets.py")
         otaUpdater.download_update_if_available()
 
 UpdateUtils.updateIfNecessary()

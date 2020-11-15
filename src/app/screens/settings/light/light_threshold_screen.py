@@ -1,8 +1,8 @@
 from m5stack import *
 from ...abstract_screen import AbstractScreen
 from ...utils.number_editor import NumberEditor
-from main.hardware.kippenstal_config import kippenstalConfig
-from main.hardware.kippenstal import kippenstal
+from app.hardware.kippenstal_config import kippenstalConfig
+from app.hardware.kippenstal import kippenstal
 
 class LightThresholdScreen(AbstractScreen):
 

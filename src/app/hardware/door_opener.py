@@ -1,4 +1,4 @@
-import utime, main.ulogging as ulogging
+import utime, app.ulogging as ulogging
 from machine import Timer
 from .relay import Relay
 from .kippenstal_config import kippenstalConfig

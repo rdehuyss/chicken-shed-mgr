@@ -1,4 +1,4 @@
-import machine, utime, main.secrets as secrets
+import machine, utime, app.secrets as secrets
 from m5stack import *
 from ..abstract_screen import AbstractScreen
 from ..abstract_menu_screen import AbstractMenuScreen

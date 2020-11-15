@@ -3,7 +3,7 @@ from .light_test_screen import LightTestScreen
 from .light_schedule_enabled_screen import LightScheduleEnabledScreen
 from .light_threshold_screen import LightThresholdScreen
 from .light_set_from_to_screen import LightFromToHourScreen
-from main.hardware.kippenstal_config import kippenstalConfig
+from app.hardware.kippenstal_config import kippenstalConfig
 
 class LightMenuScreen(AbstractMenuScreen):
 

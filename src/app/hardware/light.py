@@ -1,4 +1,4 @@
-import main.ulogging as ulogging
+import app.ulogging as ulogging
 from .relay import Relay
 from .kippenstal_config import kippenstalConfig
 

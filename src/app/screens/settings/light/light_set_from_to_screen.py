@@ -1,7 +1,7 @@
 from m5stack import *
 from ...abstract_screen import AbstractScreen
 from ...utils.number_editor import NumberEditor
-from main.hardware.kippenstal_config import kippenstalConfig
+from app.hardware.kippenstal_config import kippenstalConfig
 
 class LightFromToHourScreen(AbstractScreen):
 
