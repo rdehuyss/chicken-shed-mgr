@@ -41,7 +41,7 @@ class OTAUpdater:
 
         return False
 
-    def download_and_install_update_if_available(self, ssid, password):
+    def install_update_if_available_after_boot(self, ssid, password):
         """This method will install the latest version if out-of-date after boot.
         
         This method, which should be called first thing after booting, will check if the 
@@ -56,11 +56,11 @@ class OTAUpdater:
                 latest_version = self.get_version(self.modulepath(self.new_version_dir), '.version')
                 print('New update found: ', latest_version)
                 OTAUpdater._using_network(ssid, password)
-                self.download_update_if_available()
+                self.install_update_if_available()
         else:
             print('No new updates found...')
 
-    def download_update_if_available(self):
+    def install_update_if_available(self):
         """This method will immediately install the latest version if out-of-date.
         
         This method expects an active internet connection and allows you to decide yourself
@@ -140,7 +140,7 @@ class OTAUpdater:
         file_list.close()
 
     def _download_file(self, url, path):
-        print('\tDownloading: ', url, ' to ', path)
+        print('\tDownloading: ', url.replace('https://raw.githubusercontent.com', ''), 'to', path)
         self.http_client.get(url, saveToFile=path)
 
     def _copy_secrets_file(self):
@@ -148,7 +148,7 @@ class OTAUpdater:
             fromPath = self.modulepath(self.main_dir + '/' + self.secrets_file)
             toPath = self.modulepath(self.new_version_dir + '/' + self.secrets_file)
             print('Copying secrets file from {} to {}'.format(fromPath, toPath))
-            self._copy(fromPath, toPath)
+            self._copy_file(fromPath, toPath)
             print('Copied secrets file from {} to {}'.format(fromPath, toPath))
 
     def _delete_old_version(self):
@@ -158,7 +158,11 @@ class OTAUpdater:
 
     def _install_new_version(self):
         print('Installing new version at {} ...'.format(self.modulepath(self.main_dir)))
-        os.rename(self.modulepath(self.new_version_dir), self.modulepath(self.main_dir))
+        if self._os_supports_rename():
+            os.rename(self.modulepath(self.new_version_dir), self.modulepath(self.main_dir))
+        else:
+            self._copy_directory(self.modulepath(self.new_version_dir), self.modulepath(self.main_dir))
+            self._rmtree(self.modulepath(self.new_version_dir))
         print('Update installed, will reboot now')
 
     def _rmtree(self, directory):
@@ -171,7 +175,25 @@ class OTAUpdater:
                 os.remove(directory + '/' + entry[0])
         os.rmdir(directory)
 
-    def _copy(self, fromPath, toPath):
+    def _os_supports_rename(self) -> bool:
+        self._mk_dirs('otaUpdater/osRenameTest')
+        os.rename('otaUpdater', 'otaUpdated')
+        result = len(os.listdir('otaUpdated')) > 0
+        os.rmdir('otaUpdated')
+        return result
+
+    def _copy_directory(self, fromPath, toPath):
+        if not self._exists_dir(toPath):
+            self._mk_dirs(toPath)
+
+        for entry in os.ilistdir(fromPath):
+            is_dir = entry[1] == 0x4000
+            if is_dir:
+                self._copy_directory(fromPath + '/' + entry[0], toPath + '/' + entry[0])
+            else:
+                self._copy_file(fromPath + '/' + entry[0], toPath + '/' + entry[0])
+
+    def _copy_file(self, fromPath, toPath):
         with open(fromPath) as fromFile:
             with open(toPath, 'w') as toFile:
                 CHUNK_SIZE = 512 # bytes
@@ -181,6 +203,21 @@ class OTAUpdater:
                     data = fromFile.read(CHUNK_SIZE)
             toFile.close()
         fromFile.close()
+
+    def _exists_dir(self, path) -> bool:
+        try:
+            os.listdir(path)
+            return True
+        except:
+            return False
+
+    def _mk_dirs(self, path:str):
+        paths = path.split('/')
+
+        pathToCreate = ''
+        for x in paths:
+            os.mkdir(pathToCreate + x)
+            pathToCreate = pathToCreate + x + '/'
 
 
     def modulepath(self, path):
