@@ -4,7 +4,7 @@
         "close_relay": 5,
         "schedule_enabled": true,
         "open_at_hour": 10,
-        "close_at_hour_before_sunset": -1
+        "close_at_hour_after_sunset": 1
     },
     "light": {
         "relay": 16,
@@ -15,6 +15,6 @@
     },
     "fence": {
         "relay": 17,
-        "on_when": "always"
+        "on_when": "on"
     } 
 }

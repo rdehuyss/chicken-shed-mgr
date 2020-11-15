@@ -7,9 +7,10 @@ class Light(Relay):
     def __init__(self, kippenstal):
         super().__init__(kippenstalConfig.getLightRelay())
         self.kippenstal = kippenstal
+        self.toggleTime = 0
 
     def evaluate(self):
-        if not kippenstalConfig.isLightScheduleEnabled():
+        if not kippenstalConfig.isLightScheduleEnabled() or self.kippenstal.currentTime < (self.toggleTime + 3600):
             return
 
         if self.__mustTurnOnLight():
@@ -18,6 +19,10 @@ class Light(Relay):
         elif self.__mustTurnOffLight():
             self.off()
             ulogging.info('Light - off')
+
+    def toggle(self):
+        super().toggle()
+        self.toggleTime = self.kippenstal.currentTime
 
     def __mustTurnOnLight(self):
         if self.isOn():

@@ -1,4 +1,4 @@
-import utime, app.ulogging as ulogging
+import app.ulogging as ulogging
 from machine import Timer
 from .relay import Relay
 from .kippenstal_config import kippenstalConfig
@@ -82,9 +82,11 @@ class DoorOpener:
 
         closeAtHour = int(kippenstalConfig.getDoorCloseAtHour())
         if self._timeDark == None:
-            if self.kippenstal.currentLightSensorValue < 10:
-                self._timeDark = utime.time()
-        elif utime.time() > self._timeDark + closeAtHour * (60*60):
+            if self.kippenstal.currentLightSensorValue < kippenstalConfig.getLightThreshold():
+                self._timeDark = self.kippenstal.currentTime
+        elif self.kippenstal.currentLightSensorValue > kippenstalConfig.getLightThreshold():
+            self._timeDark = None
+        elif self.kippenstal.currentHour > 16 and self.kippenstal.currentTime > self._timeDark + closeAtHour * (60*60):
             return True
 
         return False

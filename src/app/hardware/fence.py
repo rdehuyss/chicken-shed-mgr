@@ -3,7 +3,7 @@ from .relay import Relay
 from .kippenstal_config import kippenstalConfig
 
 class FenceConstants:
-    alwaysOn = "always"
+    alwaysOn = "on"
     onWhenDoorOpen = "on when door open"
     alwaysOff = "off"
 
@@ -14,9 +14,6 @@ class Fence(Relay):
         self.kippenstal = kippenstal
 
     def evaluate(self):
-        if kippenstalConfig.getFenceOnState() == FenceConstants.alwaysOff:
-            return
-
         if self.__mustTurnOnFence():
             self.on()
             ulogging.info('Fence - electrified')
@@ -36,10 +33,12 @@ class Fence(Relay):
         return False
 
     def __mustTurnOffFence(self):
-        if self.isOff():
+        if self.isOff() or kippenstalConfig.getFenceOnState() == FenceConstants.alwaysOn:
             return False
 
-        if kippenstalConfig.getFenceOnState() == FenceConstants.onWhenDoorOpen and self.kippenstal.doorOpener.isClosed():
+        if kippenstalConfig.getFenceOnState() == FenceConstants.alwaysOff:
+            return True
+        elif kippenstalConfig.getFenceOnState() == FenceConstants.onWhenDoorOpen and self.kippenstal.doorOpener.isClosed():
             return True
 
         return False

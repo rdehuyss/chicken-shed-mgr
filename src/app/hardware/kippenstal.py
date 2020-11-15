@@ -32,6 +32,7 @@ class Kippenstal:
         ulogging.info('Kippenstal status' + door_status + fence_status + light_status + light_sensor_status)
 
     def __watcher(self, timer):
+        self.currentTime = utime.time()
         self.currentHour = "{}".format(utime.strftime('%H', utime.localtime()))
         self.currentLightSensorValue = self.lightSensor.luminance()
 

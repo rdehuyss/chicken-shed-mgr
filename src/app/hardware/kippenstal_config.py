@@ -79,11 +79,11 @@ class KippenstalConfig:
             self.__save_config()
 
     def getDoorCloseAtHour(self):
-        return self.config_data['door_opener']['close_at_hour_before_sunset']
+        return self.config_data['door_opener']['close_at_hour_after_sunset']
 
     def setDoorCloseAtHour(self, value:int):
         if value != self.getDoorOpenAtHour():
-            self.config_data['door_opener']['close_at_hour_before_sunset'] = value
+            self.config_data['door_opener']['close_at_hour_after_sunset'] = value
             self.__save_config()
 
     def __save_config(self):
