@@ -27,7 +27,6 @@ class OTALogger:
         else:
             return False
 
-
     def _write_to_socket(self, s):
         contentLength = self.calculate_content_length()
         s.write(b'Content-Length: %d\r\n' % contentLength)

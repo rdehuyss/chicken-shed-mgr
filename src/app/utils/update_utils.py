@@ -67,7 +67,6 @@ class UpdateUtils:
         else:
             ulogging.warn('Sending logs to GitHub Gist failed...') 
 
-
     @staticmethod
     def _otaUpdate():
         ulogging.info('Checking for Updates...')
