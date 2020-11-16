@@ -58,10 +58,10 @@ class UpdateUtils:
     @staticmethod
     def _sendLogsToGithubGist():
         ulogging.info('Sending logs to GitHub Gist...')
-        from .ota_logger import OTALogger
         import app.secrets as secrets
+        from .ota_logger import OTALogger
         o = OTALogger(secrets.GIST_ID, secrets.GIST_ACCESS_TOKEN)
-        succeeded = o.logToGist('logs.log')
+        succeeded = o.log_to_gist('logs.log')
         if succeeded:
             ulogging.info('Sending logs to GitHub Gist succeeded...') 
         else:
@@ -70,6 +70,7 @@ class UpdateUtils:
 
     @staticmethod
     def _otaUpdate():
+        ulogging.info('Checking for Updates...')
         from .ota_updater import OTAUpdater
         otaUpdater = OTAUpdater('https://github.com/rdehuyss/chicken-shed-mgr', github_src_dir='src', main_dir='app', secrets_file="secrets.py")
         otaUpdater.install_update_if_available()
