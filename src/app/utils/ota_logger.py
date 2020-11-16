@@ -1,27 +1,50 @@
 import os, machine, binascii, utime
-from httpclient import HttpClient
+from .httpclient import HttpClient
 
 class OTALogger:
     """
     A class to log from your MicroController to a GitHub Gist.
     """
 
-    def __init__(self, gistId, username, access_token, headers={}):
+    def __init__(self, gistId, access_token, headers={}):
         self.gistId = gistId
-        self.username = username
         self.access_token = access_token
         self.headers = headers
 
-    def log(self, filePath):
-        authHeader = binascii.b2a_base64('{}:{}'.format(self.username, self.access_token))
-        httpClient = HttpClient(headers={'Authorization': 'Basic {}'.format(authHeader)})
+    def logToGist(self, filePath) -> bool:
+        """Function which will upload the file to the specified GitHub Gist
+
+        Returns
+        -------
+            bool: true if logging to Gist succeeded, false otherzie
+        """
+
+        httpClient = HttpClient(headers={'Authorization': 'token {}'.format(self.access_token)})
+        self.filePath = filePath
+        rootUrl = 'https://api.github.com/gists/' + self.gistId
+        print(rootUrl)
+        resp = httpClient.post(rootUrl, custom=self.writeToSocket)
+        if resp.status_code == 200:
+            return True
+        else:
+            return False
 
 
-        httpClient.post('https://api.github.com/gists/' + self.gistId, file=filePath)
-        with open(filePath + ".tmp") as tmpFile:
-                tmpFile.write('{"public":true,"files":{"{}.log":{"content":"'.format())
-                with open(filePath) as logFile:
-                    print('todo')
+    def writeToSocket(self, s):
+        contentLength = self.calculateContentLength()
+        s.write(b'Content-Length: %d\r\n' % contentLength)
+        s.write(b'\r\n')
+        s.write('{"public":true,"files":{"' + utime.strftime('%Y%m%d-%H%M%S', utime.localtime()) + '.log":{"content":"')
+        with open(self.filePath, 'r') as file_object:
+            for line in file_object:
+                lineToWrite = line.replace('"', '\"').replace('\n', '<br/>')
+                s.write(lineToWrite)
+        s.write('"}}}')
 
-
+    def calculateContentLength(self) -> int:
+        contentLength = 58 + 4
+        with open(self.filePath, 'r') as file_object:
+            for line in file_object:
+                contentLength += len(line.replace('"', '\"').replace('\n', '<br/>'))
+        return contentLength
 

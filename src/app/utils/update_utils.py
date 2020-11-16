@@ -15,6 +15,7 @@ class UpdateUtils:
                 ulogging.info('Update requested...')
                 UpdateUtils._connectToWifi()
                 UpdateUtils._updateTimeUsingNTP()
+                UpdateUtils._sendLogsToGithubGist()
                 UpdateUtils._otaUpdate()
                 ulogging.info('Updates finished, will reboot')
                 machine.reset()
@@ -53,6 +54,19 @@ class UpdateUtils:
         rtc = machine.RTC()
         rtc.ntp_sync(server="0.be.pool.ntp.org", tz="CET-1CEST,M3.5.0,M10.5.0/3")
         ulogging.info('Updated time...')
+
+    @staticmethod
+    def _sendLogsToGithubGist():
+        ulogging.info('Sending logs to GitHub Gist...')
+        from .ota_logger import OTALogger
+        import app.secrets as secrets
+        o = OTALogger(secrets.GIST_ID, secrets.GIST_ACCESS_TOKEN)
+        succeeded = o.logToGist('logs.log')
+        if succeeded:
+            ulogging.info('Sending logs to GitHub Gist succeeded...') 
+        else:
+            ulogging.warn('Sending logs to GitHub Gist failed...') 
+
 
     @staticmethod
     def _otaUpdate():

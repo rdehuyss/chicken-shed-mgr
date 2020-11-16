@@ -50,7 +50,7 @@ class HttpClient:
     def __init__(self, headers={}):
         self._headers = headers
 
-    def request(self, method, url, data=None, json=None, file=None, saveToFile=None, headers={}, stream=None):
+    def request(self, method, url, data=None, json=None, file=None, custom=None, saveToFile=None, headers={}, stream=None):
         def _write_headers(sock, _headers):
             for k in _headers:
                 sock.write(b'{}: {}\r\n'.format(k, _headers[k]))
@@ -107,6 +107,8 @@ class HttpClient:
                 with open(file, 'r') as file_object:
                     for line in file_object:
                         s.write(line + '\n')
+            elif custom:
+                custom(s)
             else:
                 s.write(b'\r\n')
 
