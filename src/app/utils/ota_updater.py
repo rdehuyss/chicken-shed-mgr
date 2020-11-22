@@ -19,6 +19,9 @@ class OTAUpdater:
         self.new_version_dir = new_version_dir
         self.secrets_file = secrets_file
 
+    def __del__(self):
+        self.http_client = None
+
     def check_for_update_to_install_during_next_reboot(self) -> bool:
         """Function which will check the GitHub repo if there is a newer version available.
         
@@ -76,7 +79,6 @@ class OTAUpdater:
             self._copy_secrets_file()
             self._delete_old_version()
             self._install_new_version()
-            machine.reset()
 
     @staticmethod
     def _using_network(ssid, password):

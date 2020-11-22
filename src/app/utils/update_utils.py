@@ -7,16 +7,16 @@ class UpdateUtils:
     def updateIfNecessary():
         import machine, os
         try:
-            #with open('.updateRequested', "r") as updateRequested:
-            #    pass
+            with open('.updateRequested', "r") as updateRequested:
+                pass
 
             try:
-                #os.remove('.updateRequested')
+                os.remove('.updateRequested')
                 ulogging.info('Update requested...')
                 UpdateUtils._connectToWifi()
                 UpdateUtils._updateTimeUsingNTP()
-                UpdateUtils._sendLogsToGithubGist()
                 UpdateUtils._otaUpdate()
+                UpdateUtils._sendLogsToGithubGist()
                 ulogging.info('Updates finished, will reboot')
             except BaseException as error:
                 print(error)
@@ -56,6 +56,14 @@ class UpdateUtils:
         ulogging.info('Updated time...')
 
     @staticmethod
+    def _otaUpdate():
+        ulogging.info('Checking for Updates...')
+        from .ota_updater import OTAUpdater
+        otaUpdater = OTAUpdater('https://github.com/rdehuyss/chicken-shed-mgr', github_src_dir='src', main_dir='app', secrets_file="secrets.py")
+        otaUpdater.install_update_if_available()
+        del(otaUpdater)
+    
+    @staticmethod
     def _sendLogsToGithubGist():
         import os
         if not 'logs.log' in os.listdir():
@@ -72,11 +80,5 @@ class UpdateUtils:
         else:
             ulogging.warn('Sending logs to GitHub Gist failed...') 
 
-    @staticmethod
-    def _otaUpdate():
-        ulogging.info('Checking for Updates...')
-        from .ota_updater import OTAUpdater
-        otaUpdater = OTAUpdater('https://github.com/rdehuyss/chicken-shed-mgr', github_src_dir='src', main_dir='app', secrets_file="secrets.py")
-        otaUpdater.install_update_if_available()
 
 UpdateUtils.updateIfNecessary()

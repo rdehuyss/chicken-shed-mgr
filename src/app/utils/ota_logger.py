@@ -12,6 +12,9 @@ class OTALogger:
         self.headers = headers
         self.http_client = HttpClient(headers={'Authorization': 'token {}'.format(self.access_token)})
 
+    def __del__(self):
+        self.http_client = None
+
     def log_to_gist(self, file_path) -> bool:
         """Function which will upload the file to the specified GitHub Gist
 
