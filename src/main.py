@@ -8,4 +8,4 @@ print('Waiting for AMPY updates')
 utime.sleep(5)
 
 import app.utils.update_utils
-#import app.start
+import app.start
