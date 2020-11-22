@@ -86,7 +86,7 @@ class DoorOpener:
                 self._timeDark = self.kippenstal.currentTime
         elif self.kippenstal.currentLightSensorValue > kippenstalConfig.getLightThreshold():
             self._timeDark = None
-        elif self.kippenstal.currentHour > 16 and self.kippenstal.currentTime > self._timeDark + closeAtHour * (60*60):
+        elif int(self.kippenstal.currentHour) > 16 and self.kippenstal.currentTime > self._timeDark + closeAtHour * (60*60):
             return True
 
         return False

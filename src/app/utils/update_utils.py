@@ -7,21 +7,21 @@ class UpdateUtils:
     def updateIfNecessary():
         import machine, os
         try:
-            with open('.updateRequested', "r") as updateRequested:
-                pass
+            #with open('.updateRequested', "r") as updateRequested:
+            #    pass
 
             try:
-                os.remove('.updateRequested')
+                #os.remove('.updateRequested')
                 ulogging.info('Update requested...')
                 UpdateUtils._connectToWifi()
                 UpdateUtils._updateTimeUsingNTP()
                 UpdateUtils._sendLogsToGithubGist()
                 UpdateUtils._otaUpdate()
                 ulogging.info('Updates finished, will reboot')
-                machine.reset()
             except BaseException as error:
                 print(error)
                 ulogging.error('Error updating: '+ str(error))
+            machine.reset()
 
         except BaseException as error:
             print(error)
@@ -57,6 +57,10 @@ class UpdateUtils:
 
     @staticmethod
     def _sendLogsToGithubGist():
+        import os
+        if not 'logs.log' in os.listdir():
+            return
+
         ulogging.info('Sending logs to GitHub Gist...')
         import app.secrets as secrets
         from .ota_logger import OTALogger
@@ -64,6 +68,7 @@ class UpdateUtils:
         succeeded = o.log_to_gist('logs.log')
         if succeeded:
             ulogging.info('Sending logs to GitHub Gist succeeded...') 
+            os.remove('logs.log')
         else:
             ulogging.warn('Sending logs to GitHub Gist failed...') 
 

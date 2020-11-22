@@ -17,7 +17,7 @@ class OTALogger:
 
         Returns
         -------
-            bool: true if logging to Gist succeeded, false otherzie
+            bool: true if logging to Gist succeeded, false otherwise
         """
         self.file_path = file_path
         rootUrl = 'https://api.github.com/gists/' + self.gist_id
@@ -32,16 +32,15 @@ class OTALogger:
         s.write(b'Content-Length: %d\r\n' % contentLength)
         s.write(b'\r\n')
         s.write('{"public":true,"files":{"' + utime.strftime('%Y%m%d-%H%M%S', utime.localtime()) + '.log":{"content":"')
-        with open(self.file_path, 'r') as file_object:
+        with open(self.file_path, 'rb') as file_object:
             for line in file_object:
-                lineToWrite = line.replace('"', '\"').replace('\n', '<br/>')
-                s.write(lineToWrite)
+                s.write(line.replace(b'"', b'\"').replace(b'\n', b'<br/>'))
         s.write('"}}}')
 
     def calculate_content_length(self) -> int:
         contentLength = 58 + 4
-        with open(self.file_path, 'r') as file_object:
+        with open(self.file_path, 'rb') as file_object:
             for line in file_object:
-                contentLength += len(line.replace('"', '\"').replace('\n', '<br/>'))
+                contentLength += len(line.replace(b'"', b'\"').replace(b'\n', b'<br/>'))
         return contentLength
 

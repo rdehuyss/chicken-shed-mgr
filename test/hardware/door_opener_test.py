@@ -148,5 +148,5 @@ def test_doorOpener_doorOpenAndItMoreThan1HourDark_closeDoor(mocker):
 
 def setUpKippenstal(hour, lightSensorValue):
     kippenstal.currentTime = 1605476831.56942
-    kippenstal.currentHour = hour
+    kippenstal.currentHour = str(hour)
     kippenstal.currentLightSensorValue = lightSensorValue

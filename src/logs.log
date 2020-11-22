@@ -1,0 +1,79 @@
+22:09:12 - INFO - No update needed
+22:09:21 - INFO - DoorOpener - Opening door
+22:09:21 - INFO - DoorOpener - Door opened
+22:09:21 - INFO - Fence - electrified
+22:09:21 - INFO - Kippenstal Mgr started
+22:10:02 - INFO - No update needed
+22:10:11 - INFO - DoorOpener - Opening door
+22:10:11 - INFO - DoorOpener - Door opened
+22:10:11 - INFO - Fence - electrified
+22:10:11 - INFO - Kippenstal Mgr started
+22:15:09 - INFO - Update requested...
+22:15:10 - INFO - Connecting to WIFI
+22:15:12 - INFO - Connected to WIFI
+22:15:12 - INFO - Updating time...
+23:15:12 - INFO - Updated time...
+23:15:12 - INFO - Sending logs to GitHub Gist...
+12:07:42 - INFO - Sending logs to GitHub Gist succeeded...
+12:07:42 - INFO - Checking for Updates...
+12:09:44 - INFO - No update needed
+12:09:54 - INFO - DoorOpener - Opening door
+12:09:54 - INFO - DoorOpener - Door opened
+12:09:54 - INFO - Fence - electrified
+12:09:54 - INFO - Kippenstal Mgr started
+15:07:52 - INFO - Light - on
+15:11:52 - INFO - Light - off
+15:17:52 - INFO - Light - on
+15:23:52 - INFO - Light - off
+15:31:52 - INFO - Light - on
+15:33:52 - INFO - Light - off
+15:53:52 - INFO - Light - on
+22:00:51 - INFO - Light - off
+06:00:51 - INFO - Light - on
+08:47:52 - INFO - Light - off
+16:01:52 - INFO - Light - on
+22:00:51 - INFO - Light - off
+06:00:51 - INFO - Light - on
+08:27:52 - INFO - Light - off
+16:19:52 - INFO - Light - on
+22:00:51 - INFO - Light - off
+06:00:51 - INFO - Light - on
+22:09:12 - INFO - No update needed
+22:09:22 - INFO - DoorOpener - Opening door
+22:09:22 - INFO - DoorOpener - Door opened
+22:09:22 - INFO - Fence - electrified
+22:09:22 - INFO - Kippenstal Mgr started
+22:09:12 - INFO - No update needed
+22:09:12 - INFO - No update needed
+22:09:23 - INFO - No update needed
+22:09:12 - INFO - No update needed
+22:09:12 - INFO - No update needed
+22:09:12 - INFO - No update needed
+22:09:22 - INFO - DoorOpener - Opening door
+22:09:22 - INFO - DoorOpener - Door opened
+22:09:22 - INFO - Fence - electrified
+22:09:22 - INFO - Kippenstal Mgr started
+22:09:12 - INFO - No update needed
+22:09:23 - INFO - No update needed
+22:09:34 - INFO - DoorOpener - Opening door
+22:09:34 - INFO - DoorOpener - Door opened
+22:09:34 - INFO - Fence - electrified
+22:09:34 - INFO - Kippenstal Mgr started
+22:10:09 - INFO - Update requested...
+22:10:10 - INFO - Connecting to WIFI
+22:10:14 - INFO - Connected to WIFI
+22:10:14 - INFO - Updating time...
+22:10:14 - INFO - Updated time...
+22:10:14 - INFO - Sending logs to GitHub Gist...
+07:29:45 - INFO - Sending logs to GitHub Gist succeeded...
+07:29:45 - INFO - Checking for Updates...
+07:29:54 - ERROR - Error updating: memory allocation failed, allocating 8448 bytes
+07:30:04 - INFO - Light - on
+07:30:04 - INFO - Fence - electrified
+07:30:04 - INFO - Kippenstal Mgr started
+07:30:48 - INFO - Update requested...
+07:30:49 - INFO - Connecting to WIFI
+07:30:53 - INFO - Connected to WIFI
+07:30:53 - INFO - Updating time...
+07:30:53 - INFO - Updated time...
+07:30:53 - INFO - Sending logs to GitHub Gist...

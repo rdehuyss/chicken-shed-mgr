@@ -136,5 +136,5 @@ def test_lightOffToggleTurnOnLight_thenEvaluate1HourLaterWithEnoughLight_turnOff
 
 def setUpKippenstal(hour, lightSensorValue):
     kippenstal.currentTime = 1605476831.56942
-    kippenstal.currentHour = hour
+    kippenstal.currentHour = str(hour)
     kippenstal.currentLightSensorValue = lightSensorValue

@@ -453,3 +453,37 @@
 00:28:16 - INFO - Light - on
 00:28:16 - INFO - Light - off
 00:28:16 - INFO - Light - off
+07:50:24 - INFO - DoorOpener - Opening door
+07:50:24 - INFO - DoorOpener - Door opened
+07:50:24 - INFO - Fence - electrified
+07:50:24 - INFO - Fence - not electrified
+07:50:24 - INFO - Fence - electrified
+07:50:24 - INFO - Fence - not electrified
+07:50:24 - INFO - Light - off
+07:50:24 - INFO - Light - on
+07:50:24 - INFO - Light - off
+07:50:24 - INFO - Light - off
+07:50:40 - INFO - DoorOpener - Opening door
+07:50:40 - INFO - DoorOpener - Door opened
+07:50:40 - INFO - DoorOpener - Closing door
+07:50:40 - INFO - DoorOpener - Door closed
+07:50:40 - INFO - Fence - electrified
+07:50:40 - INFO - Fence - not electrified
+07:50:40 - INFO - Fence - electrified
+07:50:40 - INFO - Fence - not electrified
+07:50:40 - INFO - Light - off
+07:50:40 - INFO - Light - on
+07:50:40 - INFO - Light - off
+07:50:40 - INFO - Light - off
+07:51:16 - INFO - DoorOpener - Opening door
+07:51:16 - INFO - DoorOpener - Door opened
+07:51:16 - INFO - DoorOpener - Closing door
+07:51:16 - INFO - DoorOpener - Door closed
+07:51:16 - INFO - Fence - electrified
+07:51:16 - INFO - Fence - not electrified
+07:51:16 - INFO - Fence - electrified
+07:51:16 - INFO - Fence - not electrified
+07:51:16 - INFO - Light - off
+07:51:16 - INFO - Light - on
+07:51:16 - INFO - Light - off
+07:51:16 - INFO - Light - off
