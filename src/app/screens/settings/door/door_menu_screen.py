@@ -8,15 +8,15 @@ class DoorOpenerMenuScreen(AbstractMenuScreen):
 
     def __init__(self):
         super().__init__()
-        self.doorOpenerTestScreen = DoorOpenerTestScreen()
-        self.doorScheduledEnabledScreen = DoorScheduleEnabledScreen()
-        self.doorOpenFromToHourScreen = DoorOpenFromToHourScreen()
+        self._doorOpenerTestScreen = DoorOpenerTestScreen()
+        self._doorScheduledEnabledScreen = DoorScheduleEnabledScreen()
+        self._doorOpenFromToHourScreen = DoorOpenFromToHourScreen()
 
     def getMenuItems(self):
         return [
-                ('Test Door Opener', self.doorOpenerTestScreen.show),
-                ('Door Schedule - {}'.format('on' if kippenstalConfig.isDoorOpenerScheduleEnabled() else 'off'), self.doorScheduledEnabledScreen.show),
-                ('Door Open from/to', self.doorOpenFromToHourScreen.show, kippenstalConfig.isDoorOpenerScheduleEnabled()),
+                ('Test Door Opener', self._doorOpenerTestScreen.show),
+                ('Door Schedule - {}'.format('on' if kippenstalConfig.isDoorOpenerScheduleEnabled() else 'off'), self._doorScheduledEnabledScreen.show),
+                ('Door Open from/to', self._doorOpenFromToHourScreen.show, kippenstalConfig.isDoorOpenerScheduleEnabled()),
                 ('Back', super().back)
             ]
 

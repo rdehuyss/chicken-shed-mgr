@@ -1,5 +1,5 @@
 import machine, utime
-from m5stack import *
+from m5stack import lcd, buttonA, buttonB, buttonC
 from ..abstract_screen import AbstractScreen
 from ..utils.number_editor import NumberEditor
 
@@ -10,10 +10,10 @@ class EditDateTimeScreen(AbstractScreen):
         super().show()
         lcd.print('Setup date & time', lcd.CENTER, 85)
 
-        self.printDate()
-        self.printTime()
+        self._printDate()
+        self._printTime()
 
-        self.year.startEditing(self)
+        self._year.startEditing(self)
 
     def hide(self):
         super().hide()
@@ -21,7 +21,7 @@ class EditDateTimeScreen(AbstractScreen):
         buttonB.wasPressed(None)
         buttonC.wasPressed(None)
 
-    def printDate(self):
+    def _printDate(self):
         yearValue = 2020
         monthValue = 11
         dateValue = 7
@@ -32,18 +32,18 @@ class EditDateTimeScreen(AbstractScreen):
             monthValue = currentTime[1]
             dateValue = currentTime[2]
 
-        self.year = NumberEditor(1, yearValue, 2020, 2050, '{:04d}')
-        self.month = NumberEditor(2, monthValue, 1, 12, '{:02d}')
-        self.date = NumberEditor(3, dateValue, 1, 31, '{:02d}')
+        self._year = NumberEditor(1, yearValue, 2020, 2050, '{:04d}')
+        self._month = NumberEditor(2, monthValue, 1, 12, '{:02d}')
+        self._date = NumberEditor(3, dateValue, 1, 31, '{:02d}')
 
         lcd.setCursor(75, 125)
-        self.year.printToLcd()
+        self._year.printToLcd()
         lcd.print('-')
-        self.month.printToLcd()
+        self._month.printToLcd()
         lcd.print('-')
-        self.date.printToLcd()
+        self._date.printToLcd()
 
-    def printTime(self):
+    def _printTime(self):
         hourValue = 9
         minuteValue = 0
         secondValue = 0
@@ -54,32 +54,32 @@ class EditDateTimeScreen(AbstractScreen):
             minuteValue = currentTime[4]
             secondValue = currentTime[5]
 
-        self.hour = NumberEditor(4, hourValue, 0, 23, '{:02d}')
-        self.minute = NumberEditor(5, minuteValue, 0, 59, '{:02d}')
-        self.second = NumberEditor(6, secondValue, 0, 59, '{:02d}')
+        self._hour = NumberEditor(4, hourValue, 0, 23, '{:02d}')
+        self._minute = NumberEditor(5, minuteValue, 0, 59, '{:02d}')
+        self._second = NumberEditor(6, secondValue, 0, 59, '{:02d}')
 
         lcd.setCursor(95, 165)
-        self.hour.printToLcd()
+        self._hour.printToLcd()
         lcd.print(':')
-        self.minute.printToLcd()
+        self._minute.printToLcd()
         lcd.print(':')
-        self.second.printToLcd()
+        self._second.printToLcd()
 
 
     def editingDone(self, numberEditor:NumberEditor):
         if numberEditor.nbr == 1:
-            self.month.startEditing(self)
+            self._month.startEditing(self)
         elif numberEditor.nbr == 2:
-            self.date.startEditing(self)
+            self._date.startEditing(self)
         elif numberEditor.nbr == 3:
-            self.hour.startEditing(self)
+            self._hour.startEditing(self)
         elif numberEditor.nbr == 4:
-            self.minute.startEditing(self)
+            self._minute.startEditing(self)
         elif numberEditor.nbr == 5:
-            self.second.startEditing(self)
+            self._second.startEditing(self)
         elif numberEditor.nbr == 6:
             rtc = machine.RTC()
-            rtc.init((self.year.value, self.month.value, self.date.value, self.hour.value, self.minute.value, self.second.value))
+            rtc.init((self._year.value, self._month.value, self._date.value, self._hour.value, self._minute.value, self._second.value))
             super().back()
             return
 

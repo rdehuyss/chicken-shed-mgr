@@ -5,14 +5,12 @@ from .screen_manager import ScreenManager
 class AbstractScreen:
 
     def __init__(self):
-        #print(str(self.__class__.__name__) + ' - In __init__')
-        self.isShown = False
+        self._isShown = False
 
     def show(self):
         ScreenManager.isShown(self)
-        self.isShown = True
-        #print(str(self.__class__.__name__) + ' - In show')
-
+        self._isShown = True
+        
         lcd.clear(lcd.WHITE)
         lcd.setColor(lcd.BLACK)
         lcd.font(lcd.FONT_Tooney, transparent=True)
@@ -21,8 +19,7 @@ class AbstractScreen:
         lcd.print('Chicken Shed Mgr {}'.format(self._getVersion()), lcd.CENTER, 45)
 
     def hide(self):
-        self.isShown = False
-        #print(str(self.__class__.__name__) + ' - In hide')
+        self._isShown = False
 
     def back(self):
         self.hide()

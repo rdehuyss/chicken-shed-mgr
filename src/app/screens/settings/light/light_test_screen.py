@@ -5,8 +5,8 @@ class LightTestScreen(AbstractMenuScreen):
 
     def getMenuItems(self):
         return [
-                ('Light on', self.turnLightOn),
-                ('Light off', self.turnLightOff),
+                ('Light on', self._turnLightOn),
+                ('Light off', self._turnLightOff),
                 ('Back', super().back)
             ]
     
@@ -18,8 +18,8 @@ class LightTestScreen(AbstractMenuScreen):
         super().hide()
         kippenstal.start()
 
-    def turnLightOn(self):
+    def _turnLightOn(self):
         kippenstal.light.on()
 
-    def turnLightOff(self):
+    def _turnLightOff(self):
         kippenstal.light.off()

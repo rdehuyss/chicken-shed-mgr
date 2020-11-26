@@ -9,9 +9,9 @@ class AbstractMenuScreen(AbstractScreen):
 
     def show(self):
         super().show()
-        buttonA.wasPressed(self.on_btnOk)
-        buttonB.wasPressed(self.on_btnUp)
-        buttonC.wasPressed(self.on_btnDown)
+        buttonA.wasPressed(self._on_btnOk)
+        buttonB.wasPressed(self._on_btnUp)
+        buttonC.wasPressed(self._on_btnDown)
         
         self.resetScreen()
         self.printHeader()
@@ -39,46 +39,47 @@ class AbstractMenuScreen(AbstractScreen):
         self.value = 1
 
     def printMenu(self):
-        self.menuItems = self.__filterMenuItems(self.getMenuItems())
-        self.min = 1
-        self.max = len(self.menuItems)
+        self._menuItems = self.__filterMenuItems(self.getMenuItems())
+        self._min = 1
+        self._max = len(self._menuItems)
 
         lcd.font(lcd.FONT_DejaVu24, transparent=True)
         lcd.rect(self.cursor[0],self.cursor[1],320,240, lcd.WHITE, lcd.WHITE)
         lcd.setCursor(self.cursor[0],self.cursor[1])
 
-        for i in range(self.max):
+        for i in range(self._max):
             selectedPrefix = '  '
             if (i+1) == self.value:
                 selectedPrefix = '>'
             
-            lcd.println('{} {}'.format(selectedPrefix, self.menuItems[i][0]))
+            lcd.println('{} {}'.format(selectedPrefix, self._menuItems[i][0]))
     
-    def on_btnOk(self):
+    def _on_btnOk(self):
         buttonA.wasPressed(None)
         buttonB.wasPressed(None)
         buttonC.wasPressed(None)
-        self.menuItems[self.value - 1][1]()
+        self._menuItems[self.value - 1][1]()
 
-    def on_btnUp(self):
-        if self.min == self.value:
-            self.value = self.max
+    def _on_btnUp(self):
+        if self._min == self.value:
+            self.value = self._max
         else:
             self.value = self.value - 1
         self.printMenu()
 
-    def on_btnDown(self):
-        if self.max == self.value:
-            self.value = self.min
+    def _on_btnDown(self):
+        if self._max == self.value:
+            self.value = self._min
         else:
             self.value = self.value + 1
         self.printMenu()
 
     def __filterMenuItems(self, menuItems):
-        filtered_menuItems = [menuItem for menuItem in menuItems if self.__isMenuItemEnabled(menuItem) ]
+        filtered_menuItems = [menuItem for menuItem in menuItems if AbstractMenuScreen.__isMenuItemEnabled(menuItem) ]
         return filtered_menuItems
 
-    def __isMenuItemEnabled(self, menuItem):
+    @staticmethod
+    def __isMenuItemEnabled(menuItem):
         if len(menuItem) == 2:
             return True
 

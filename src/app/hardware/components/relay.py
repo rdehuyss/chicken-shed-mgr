@@ -1,20 +1,18 @@
 import machine
 
-class Relay:
+class PinRelay:
 
     def __init__(self, pin):
-        self.pin = machine.Pin(pin, machine.Pin.OUT)
+        self._pin = machine.Pin(pin, machine.Pin.OUT)
         self.off()
 
     def on(self):
-        self.pin.value(1)
+        self._pin.value(1)
         self.value = True
-        print('\t', str(self))
 
     def off(self):
-        self.pin.value(0)
+        self._pin.value(0)
         self.value = False
-        print('\t', str(self))
 
     def toggle(self):
         if self.isOn():
@@ -29,4 +27,4 @@ class Relay:
         return not self.isOn()
 
     def __str__(self):
-        return "pin " + str(self.pin) + " = " + str(self.value) + " (" + str(self.pin.value()) + ")"
+        return "pin " + str(self._pin) + " = " + str(self.value) + " (" + str(self._pin.value()) + ")"

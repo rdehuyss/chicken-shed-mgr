@@ -5,8 +5,8 @@ class DoorOpenerTestScreen(AbstractMenuScreen):
 
     def getMenuItems(self):
         return [
-                ('Open Door', self.openDoor),
-                ('Close Door', self.closeDoor),
+                ('Open Door', self._openDoor),
+                ('Close Door', self._closeDoor),
                 ('Back', super().back)
             ]
     
@@ -18,8 +18,8 @@ class DoorOpenerTestScreen(AbstractMenuScreen):
         super().hide()
         kippenstal.start()
 
-    def openDoor(self):
+    def _openDoor(self):
         kippenstal.doorOpener.open()
 
-    def closeDoor(self):
+    def _closeDoor(self):
         kippenstal.doorOpener.close()

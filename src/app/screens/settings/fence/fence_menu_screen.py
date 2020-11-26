@@ -8,12 +8,12 @@ class FenceMenuScreen(AbstractMenuScreen):
 
     def __init__(self):
         super().__init__()
-        self.fenceTestScreen = FenceTestScreen()
-        self.fenceStateSelectorScreen = FenceStateSelectorScreen()
+        self._fenceTestScreen = FenceTestScreen()
+        self._fenceStateSelectorScreen = FenceStateSelectorScreen()
 
     def getMenuItems(self):
         return [
-                ('Test Fence', self.fenceTestScreen.show),
-                ('Fence Schedule - {}'.format('off' if kippenstalConfig.getFenceOnState() == FenceConstants.alwaysOff else 'on'), self.fenceStateSelectorScreen.show),
+                ('Test Fence', self._fenceTestScreen.show),
+                ('Fence Schedule - {}'.format('off' if kippenstalConfig.getFenceOnState() == FenceConstants.alwaysOff else 'on'), self._fenceStateSelectorScreen.show),
                 ('Back', super().back)
             ]

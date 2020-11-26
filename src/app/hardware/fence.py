@@ -1,5 +1,5 @@
 import app.ulogging as ulogging
-from .relay import Relay
+from .components.pca9554 import PCA9554Relay
 from .kippenstal_config import kippenstalConfig
 
 class FenceConstants:
@@ -7,11 +7,11 @@ class FenceConstants:
     onWhenDoorOpen = "on when door open"
     alwaysOff = "off"
 
-class Fence(Relay):
+class Fence(PCA9554Relay):
 
     def __init__(self, kippenstal):
-        super().__init__(kippenstalConfig.getFenceRelay())
-        self.kippenstal = kippenstal
+        super().__init__(kippenstal.i2c, kippenstalConfig.getFenceRelay())
+        self._kippenstal = kippenstal
 
     def evaluate(self):
         if self.__mustTurnOnFence():
@@ -27,7 +27,7 @@ class Fence(Relay):
 
         if kippenstalConfig.getFenceOnState() == FenceConstants.alwaysOn:
             return True
-        elif kippenstalConfig.getFenceOnState() == FenceConstants.onWhenDoorOpen and self.kippenstal.doorOpener.isOpen():
+        elif kippenstalConfig.getFenceOnState() == FenceConstants.onWhenDoorOpen and self._kippenstal.doorOpener.isOpen():
             return True
 
         return False
@@ -38,7 +38,7 @@ class Fence(Relay):
 
         if kippenstalConfig.getFenceOnState() == FenceConstants.alwaysOff:
             return True
-        elif kippenstalConfig.getFenceOnState() == FenceConstants.onWhenDoorOpen and self.kippenstal.doorOpener.isClosed():
+        elif kippenstalConfig.getFenceOnState() == FenceConstants.onWhenDoorOpen and self._kippenstal.doorOpener.isClosed():
             return True
 
         return False

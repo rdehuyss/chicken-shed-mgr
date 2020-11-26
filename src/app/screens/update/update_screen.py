@@ -1,5 +1,5 @@
 import machine, utime, app.secrets as secrets
-from m5stack import *
+from m5stack import lcd
 from ..abstract_screen import AbstractScreen
 from ..abstract_menu_screen import AbstractMenuScreen
 
@@ -7,7 +7,7 @@ class UpdateScreen1(AbstractMenuScreen):
 
     def __init__(self):
         super().__init__()
-        self.updateScreen2 = UpdateScreen2()
+        self._updateScreen2 = UpdateScreen2()
 
     def printHeader(self):
         lcd.font(lcd.FONT_DejaVu18, transparent=True)
@@ -16,7 +16,7 @@ class UpdateScreen1(AbstractMenuScreen):
 
     def getMenuItems(self):
         return [
-                ('OK', self.updateScreen2.show),
+                ('OK', self._updateScreen2.show),
                 ('Back', super().back)
             ]
 
@@ -25,18 +25,18 @@ class UpdateScreen2(AbstractMenuScreen):
 
     def __init__(self):
         super().__init__()
-        self.updateScreen3 = UpdateScreen3()
+        self._updateScreen3 = UpdateScreen3()
     
     def printHeader(self):
         lcd.font(lcd.FONT_DejaVu18, transparent=True)
         lcd.println('Please create a WIFI AP using\nyour phone:')
-        lcd.println('- SSID = ' + str(secrets.WIFI_SSID))
-        lcd.println('- Pw = ' + str(secrets.WIFI_PASSWORD))
+        lcd.println('- SSID = {}'.format(str(secrets.WIFI_SSID)))
+        lcd.println('- Pw = {}'.format(str(secrets.WIFI_PASSWORD)))
         
 
     def getMenuItems(self):
         return [
-                ('OK', self.updateScreen3.show),
+                ('OK', self._updateScreen3.show),
                 ('Back', super().back)
             ]
 

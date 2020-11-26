@@ -1,16 +1,16 @@
 import app.ulogging as ulogging
-from .relay import Relay
+from .components.pca9554 import PCA9554Relay
 from .kippenstal_config import kippenstalConfig
 
-class Light(Relay):
+class Light(PCA9554Relay):
 
     def __init__(self, kippenstal):
-        super().__init__(kippenstalConfig.getLightRelay())
-        self.kippenstal = kippenstal
-        self.toggleTime = 0
+        super().__init__(kippenstal.i2c, kippenstalConfig.getLightRelay())
+        self._kippenstal = kippenstal
+        self._toggleTime = 0
 
     def evaluate(self):
-        if not kippenstalConfig.isLightScheduleEnabled() or self.kippenstal.currentTime < (self.toggleTime + 3600):
+        if not kippenstalConfig.isLightScheduleEnabled() or self._kippenstal.currentTime < (self._toggleTime + 3600):
             return
 
         if self.__mustTurnOnLight():
@@ -22,7 +22,7 @@ class Light(Relay):
 
     def toggle(self):
         super().toggle()
-        self.toggleTime = self.kippenstal.currentTime
+        self._toggleTime = self._kippenstal.currentTime
 
     def __mustTurnOnLight(self):
         if self.isOn():
@@ -43,7 +43,7 @@ class Light(Relay):
         return False
 
     def __isInsideLightTimeRange(self):
-        current_hour = int(self.kippenstal.currentHour)
+        current_hour = int(self._kippenstal.currentHour)
         if kippenstalConfig.getLightFromHour() <= current_hour and current_hour < kippenstalConfig.getLightToHour():
                 return True
         
@@ -53,7 +53,7 @@ class Light(Relay):
         return not self.__isInsideLightTimeRange()
 
     def __isLight(self):
-        lightSensorValue = self.kippenstal.currentLightSensorValue
+        lightSensorValue = self._kippenstal.currentLightSensorValue
         lightSensorThreshold = kippenstalConfig.getLightThreshold()
         return lightSensorValue >= lightSensorThreshold
 

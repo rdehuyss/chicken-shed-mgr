@@ -3,42 +3,40 @@ import usocket, os, gc
 class Response:
 
     def __init__(self, socket, saveToFile=None):
-        self.socket = socket
-        self.saveToFile = saveToFile
-        self.encoding = 'utf-8'
+        self._socket = socket
+        self._saveToFile = saveToFile
+        self._encoding = 'utf-8'
         if saveToFile is not None:
             CHUNK_SIZE = 512 # bytes
             with open(saveToFile, 'w') as outfile:
-                data = self.socket.read(CHUNK_SIZE)
+                data = self._socket.read(CHUNK_SIZE)
                 while data:
                     outfile.write(data)
-                    data = self.socket.read(CHUNK_SIZE)
+                    data = self._socket.read(CHUNK_SIZE)
                 outfile.close()
                 
-            self.socket.close()
-            self.socket = None
+            self.close()
 
     def close(self):
-        if self.socket:
-            self.socket.close()
-            self.socket = None
+        if self._socket:
+            self._socket.close()
+            self._socket = None
 
     @property
     def content(self):
-        if self.saveToFile is not None:
-            raise SystemError('You cannot get the content from the response as you decided to save it in ' + self.saveToFile)
+        if self._saveToFile is not None:
+            raise SystemError('You cannot get the content from the response as you decided to save it in {}'.format(self._saveToFile))
 
         result = None
         try:
-            result = self.socket.read()
+            result = self._socket.read()
         finally:
-            self.socket.close()
-            self.socket = None
+            self.close()
         return result
 
     @property
     def text(self):
-        return str(self.content, self.encoding)
+        return str(self.content, self._encoding)
 
     def json(self):
         import ujson

@@ -4,66 +4,66 @@ class NumberEditor:
 
     def __init__(self, nbr, value, min, max, format:str, suffix=''):
         self.value = value
-        self.oldValue = value
         self.nbr = nbr
-        self.min = min
-        self.max = max
-        self.format = format
-        self.suffix = suffix
-        self.coord = None
-        self.editingActive = False
+        self._oldValue = value
+        self._min = min
+        self._max = max
+        self._format = format
+        self._suffix = suffix
+        self._coord = None
+        self._editingActive = False
 
     def printToLcdCenter(self, y):
-        x = (320 - (lcd.textWidth(self.format.format(self.max) + self.suffix))) / 2
+        x = (320 - (lcd.textWidth(self._format.format(self._max) + self._suffix))) / 2
         lcd.setCursor(int(x), y)
         self.printToLcd()
 
     def printToLcd(self):
-        if self.coord == None:
-            self.coord = lcd.getCursor()
+        if self._coord == None:
+            self._coord = lcd.getCursor()
 
-        oldTxt = self.format.format(self.oldValue) + self.suffix
+        oldTxt = self._format.format(self._oldValue) + self._suffix
         oldTxtWidth = lcd.textWidth(oldTxt)
-        txt = self.format.format(self.value) + self.suffix
+        txt = self._format.format(self.value) + self._suffix
         txtWidth = lcd.textWidth(txt)
         # erase
-        lcd.textClear(self.coord[0], self.coord[1], oldTxt, lcd.WHITE)
-        lcd.line(self.coord[0], self.coord[1] + 25, self.coord[0] + oldTxtWidth, self.coord[1] + 25, lcd.WHITE)
+        lcd.textClear(self._coord[0], self._coord[1], oldTxt, lcd.WHITE)
+        lcd.line(self._coord[0], self._coord[1] + 25, self._coord[0] + oldTxtWidth, self._coord[1] + 25, lcd.WHITE)
 
         # write
-        lcd.setCursor(self.coord[0], self.coord[1])
+        lcd.setCursor(self._coord[0], self._coord[1])
         lcd.print(txt)
-        if self.editingActive:
-            lcd.line(self.coord[0], self.coord[1] + 25, self.coord[0] + txtWidth, self.coord[1] + 25)
+        if self._editingActive:
+            lcd.line(self._coord[0], self._coord[1] + 25, self._coord[0] + txtWidth, self._coord[1] + 25)
 
     def startEditing(self, screen):
-        self.editingActive = True
-        self.screen = screen
+        self._editingActive = True
+        self._screen = screen
         self.printToLcd()
-        buttonA.wasPressed(self.on_btnOk)
-        buttonB.wasPressed(self.on_btnUp)
-        buttonC.wasPressed(self.on_btnDown)
+        buttonA.wasPressed(self._on_btnOk)
+        buttonB.wasPressed(self._on_btnUp)
+        buttonC.wasPressed(self._on_btnDown)
 
-    def on_btnOk(self):
+    def _on_btnOk(self):
         buttonA.wasPressed(None)
         buttonB.wasPressed(None)
         buttonC.wasPressed(None)
-        self.editingActive = False
+        self._editingActive = False
         self.printToLcd()
-        self.screen.editingDone(self)
+        self._screen.editingDone(self)
 
-    def on_btnUp(self):
-        self.oldValue = self.value
-        if self.max == self.value:
-            self.value = self.min
+    def _on_btnUp(self):
+        self._oldValue = self.value
+        if self._max == self.value:
+            self.value = self._min
         else:
             self.value = self.value + 1
         self.printToLcd()
 
-    def on_btnDown(self):
-        self.oldValue = self.value
-        if self.min == self.value:
-            self.value = self.max
+    def _on_btnDown(self):
+        self._oldValue = self.value
+        if self._min == self.value:
+            self.value = self._max
         else:
             self.value = self.value - 1
         self.printToLcd()

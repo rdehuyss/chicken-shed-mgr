@@ -5,8 +5,8 @@ class FenceTestScreen(AbstractMenuScreen):
 
     def getMenuItems(self):
         return [
-                ('Fence on', self.turnFenceOn),
-                ('Fence off', self.turnFenceOff),
+                ('Fence on', self._turnFenceOn),
+                ('Fence off', self._turnFenceOff),
                 ('Back', super().back)
             ]
     
@@ -18,8 +18,8 @@ class FenceTestScreen(AbstractMenuScreen):
         super().hide()
         kippenstal.start()
 
-    def turnFenceOn(self):
+    def _turnFenceOn(self):
         kippenstal.fence.on()
 
-    def turnFenceOff(self):
+    def _turnFenceOff(self):
         kippenstal.fence.off()

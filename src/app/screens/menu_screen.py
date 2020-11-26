@@ -9,18 +9,18 @@ class MenuScreen(AbstractMenuScreen):
 
     def __init__(self):
         super().__init__()
-        self.editDateTimeScreen = EditDateTimeScreen()
-        self.lightMenuScreen = LightMenuScreen()
-        self.fenceMenuScreen = FenceMenuScreen()
-        self.doorOpenerMenuScreen = DoorOpenerMenuScreen()
-        self.updateScreen = UpdateScreen1()
+        self._editDateTimeScreen = EditDateTimeScreen()
+        self._lightMenuScreen = LightMenuScreen()
+        self._fenceMenuScreen = FenceMenuScreen()
+        self._doorOpenerMenuScreen = DoorOpenerMenuScreen()
+        self._updateScreen = UpdateScreen1()
 
     def getMenuItems(self):
         return [
-                ('Setup date & time', self.editDateTimeScreen.show),
-                ('Setup lights', self.lightMenuScreen.show),
-                ('Setup fence', self.fenceMenuScreen.show),
-                ('Setup door opener', self.doorOpenerMenuScreen.show),
-                ('Update', self.updateScreen.show),
+                ('Setup date & time', self._editDateTimeScreen.show),
+                ('Setup lights', self._lightMenuScreen.show),
+                ('Setup fence', self._fenceMenuScreen.show),
+                ('Setup door opener', self._doorOpenerMenuScreen.show),
+                ('Update', self._updateScreen.show),
                 ('Back', super().back)
             ]

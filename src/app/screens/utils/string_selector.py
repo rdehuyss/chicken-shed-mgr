@@ -4,62 +4,62 @@ class StringSelector:
 
     def __init__(self, value, possibleValues):
         self.value = value
-        self.oldValue = value
-        self.possibleValues = possibleValues
-        self.index = possibleValues.index(value)
-        self.coord = None
-        self.editingActive = False
+        self._oldValue = value
+        self._possibleValues = possibleValues
+        self._index = possibleValues.index(value)
+        self._coord = None
+        self._editingActive = False
 
     def printToLcd(self):
-        if self.coord == None:
-            self.coord = lcd.getCursor()
+        if self._coord == None:
+            self._coord = lcd.getCursor()
 
-        oldTxt = self.oldValue
+        oldTxt = self._oldValue
         oldTxtWith = lcd.textWidth(oldTxt)
         txt = self.value
         txtWidth = lcd.textWidth(txt)
         # erase
-        lcd.textClear(self.coord[0], self.coord[1], oldTxt, lcd.WHITE)
-        lcd.line(self.coord[0], self.coord[1] + 25, self.coord[0] + oldTxtWith, self.coord[1] + 25, lcd.WHITE)
+        lcd.textClear(self._coord[0], self._coord[1], oldTxt, lcd.WHITE)
+        lcd.line(self._coord[0], self._coord[1] + 25, self._coord[0] + oldTxtWith, self._coord[1] + 25, lcd.WHITE)
 
         # write
         x = (320 - (lcd.textWidth(self.value))) / 2
-        lcd.setCursor(int(x), self.coord[1])
-        self.coord = lcd.getCursor()
+        lcd.setCursor(int(x), self._coord[1])
+        self._coord = lcd.getCursor()
         lcd.print(txt)
-        if self.editingActive:
-            lcd.line(self.coord[0], self.coord[1] + 25, self.coord[0] + txtWidth, self.coord[1] + 25)
+        if self._editingActive:
+            lcd.line(self._coord[0], self._coord[1] + 25, self._coord[0] + txtWidth, self._coord[1] + 25)
 
     def startEditing(self, screen):
-        self.editingActive = True
-        self.screen = screen
+        self._editingActive = True
+        self._screen = screen
         self.printToLcd()
-        buttonA.wasPressed(self.on_btnOk)
-        buttonB.wasPressed(self.on_btnUp)
-        buttonC.wasPressed(self.on_btnDown)
+        buttonA.wasPressed(self._on_btnOk)
+        buttonB.wasPressed(self._on_btnUp)
+        buttonC.wasPressed(self._on_btnDown)
 
-    def on_btnOk(self):
+    def _on_btnOk(self):
         buttonA.wasPressed(None)
         buttonB.wasPressed(None)
         buttonC.wasPressed(None)
-        self.editingActive = False
+        self._editingActive = False
         self.printToLcd()
-        self.screen.editingDone(self)
+        self._screen.editingDone(self)
 
-    def on_btnUp(self):
-        self.oldValue = self.value
-        if len(self.possibleValues) == self.index + 1:
-            self.index = 0
+    def _on_btnUp(self):
+        self._oldValue = self.value
+        if len(self._possibleValues) == self._index + 1:
+            self._index = 0
         else:
-            self.index = self.index + 1
-        self.value = self.possibleValues[self.index]
+            self._index = self._index + 1
+        self.value = self._possibleValues[self._index]
         self.printToLcd()
 
-    def on_btnDown(self):
-        self.oldValue = self.value
-        if 0 == self.index:
-            self.index = (len(self.possibleValues) - 1)
+    def _on_btnDown(self):
+        self._oldValue = self.value
+        if 0 == self._index:
+            self._index = (len(self._possibleValues) - 1)
         else:
-            self.index = self.index - 1
-        self.value = self.possibleValues[self.index]
+            self._index = self._index - 1
+        self.value = self._possibleValues[self._index]
         self.printToLcd()

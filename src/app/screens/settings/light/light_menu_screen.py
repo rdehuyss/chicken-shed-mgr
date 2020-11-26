@@ -9,16 +9,16 @@ class LightMenuScreen(AbstractMenuScreen):
 
     def __init__(self):
         super().__init__()
-        self.lightTestScreen = LightTestScreen()
-        self.lightScheduleEnabledScreen = LightScheduleEnabledScreen()
-        self.lightThresholdScreen = LightThresholdScreen()
-        self.lightFromToHourScreen = LightFromToHourScreen()
+        self._lightTestScreen = LightTestScreen()
+        self._lightScheduleEnabledScreen = LightScheduleEnabledScreen()
+        self._lightThresholdScreen = LightThresholdScreen()
+        self._lightFromToHourScreen = LightFromToHourScreen()
 
     def getMenuItems(self):
         return [
-                ('Test Lights', self.lightTestScreen.show),
-                ('Light Schedule - {}'.format('on' if kippenstalConfig.isLightScheduleEnabled() else 'off'), self.lightScheduleEnabledScreen.show),
-                ('Setup Light Threshold', self.lightThresholdScreen.show, kippenstalConfig.isLightScheduleEnabled()),
-                ('Setup From/To Time', self.lightFromToHourScreen.show, kippenstalConfig.isLightScheduleEnabled()),
+                ('Test Lights', self._lightTestScreen.show),
+                ('Light Schedule - {}'.format('on' if kippenstalConfig.isLightScheduleEnabled() else 'off'), self._lightScheduleEnabledScreen.show),
+                ('Setup Light Threshold', self._lightThresholdScreen.show, kippenstalConfig.isLightScheduleEnabled()),
+                ('Setup From/To Time', self._lightFromToHourScreen.show, kippenstalConfig.isLightScheduleEnabled()),
                 ('Back', super().back)
             ]

@@ -1,4 +1,4 @@
-from m5stack import *
+from m5stack import lcd
 from ...abstract_screen import AbstractScreen
 from ...utils.string_selector import StringSelector
 from app.hardware.kippenstal_config import kippenstalConfig
@@ -11,15 +11,14 @@ class FenceStateSelectorScreen(AbstractScreen):
         lcd.print('Setup Fence On/Off', lcd.CENTER, 85)
 
         lcd.setCursor(160, 125)
-        self.stringSelector = StringSelector(kippenstalConfig.getFenceOnState(), 
+        self._stringSelector = StringSelector(kippenstalConfig.getFenceOnState(), 
             [ FenceConstants.alwaysOn, FenceConstants.onWhenDoorOpen, FenceConstants.alwaysOff]
         )
-        self.stringSelector.printToLcd()
-        self.stringSelector.startEditing(self)
+        self._stringSelector.printToLcd()
+        self._stringSelector.startEditing(self)
 
     def editingDone(self, editor:StringSelector):
-        print('Fence state', self.stringSelector.value)
-        kippenstalConfig.setFenceOnState(self.stringSelector.value)
+        kippenstalConfig.setFenceOnState(self._stringSelector.value)
         super().back()
 
     

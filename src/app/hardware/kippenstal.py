@@ -1,5 +1,5 @@
 import utime, app.ulogging as ulogging
-from machine import Timer
+from machine import Timer, I2C
 from .light_sensor import LightSensor
 from .light import Light
 from .fence import Fence, FenceConstants
@@ -8,7 +8,8 @@ from .door_opener import DoorOpener
 class Kippenstal:
 
     def __init__(self):
-        self.lightSensor = LightSensor()
+        self.i2c = I2C(freq=400000, sda=21, scl=22)
+        self.lightSensor = LightSensor(self)
         self.light = Light(self)
         self.fence = Fence(self)
         self.doorOpener = DoorOpener(self)
@@ -16,12 +17,12 @@ class Kippenstal:
 
     def start(self):
         self.__watcher(None)
-        self.timer = Timer(2)
-        self.timer.init(period=60000, mode=Timer.PERIODIC, callback=self.__watcher)
+        self._timer = Timer(2)
+        self._timer.init(period=60000, mode=Timer.PERIODIC, callback=self.__watcher)
         ulogging.info('Kippenstal Mgr started')
 
     def stop(self):
-        self.timer.deinit()
+        self._timer.deinit()
         ulogging.info('Kippenstal Mgr stopped')
 
     def status(self):
