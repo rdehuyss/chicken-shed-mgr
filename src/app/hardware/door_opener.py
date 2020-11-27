@@ -96,6 +96,3 @@ class DoorOpener:
         self.__stopMovement()
         self._isOpen = False
         ulogging.info('DoorOpener - Door closed')
-
-    def __str__(self):
-        return 'DoorOpener - Door is {}'.format('open' if self.isOpen() else 'closed')

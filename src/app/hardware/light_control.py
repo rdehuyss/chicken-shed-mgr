@@ -29,7 +29,6 @@ class LightControl:
             ulogging.info('LightControl - Lights Toggled Manually - Light 1 & 2 - off')
 
     def __evaluateLight(self, name:str, light:PCA9554Relay, fromTime:str, toTime:str):
-        #print('LightControl', name, 'from: ', fromTime, 'to: ', toTime, 'isOn: ', light.isOn())
         if self.__mustTurnOnLight(light, fromTime, toTime):
             light.on()
             ulogging.info('LightControl - {} - on'.format(name))

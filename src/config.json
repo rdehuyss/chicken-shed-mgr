@@ -21,7 +21,7 @@
         "schedule_enabled": true
     },
     "fence": {
-        "relay": 17,
+        "relay": 5,
         "on_when": "on"
     } 
 }

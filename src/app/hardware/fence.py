@@ -42,6 +42,3 @@ class Fence(PCA9554Relay):
             return True
 
         return False
-
-    def __str__(self):
-        return 'Fence - Fence is {}'.format('electrified' if self.isOn() else 'not electrified')

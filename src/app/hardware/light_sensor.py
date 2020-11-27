@@ -35,7 +35,4 @@ class LightSensor():
                 return int(self._bh1750.luminance(BH1750.ONCE_HIRES_1))
             except:
                 return -1
-
-    def __str__(self):
-        return 'LightSensor - {} lux'.format(self._currentLightSensorValue)
         

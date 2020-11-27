@@ -26,13 +26,6 @@ class Kippenstal:
         self.isRunning = False
         ulogging.info('Kippenstal Mgr stopped')
 
-    def status(self):
-        door_status = '\n\t- ' + str(self.doorOpener)
-        fence_status = '\n\t- ' + str(self.fence)
-        light_status = '\n\t- ' + str(self.light)
-        light_sensor_status = '\n\t- ' + str(self.lightSensor)
-        ulogging.info('Kippenstal status' + door_status + fence_status + light_status + light_sensor_status)
-
     def evaluate(self):
         if self.isRunning:
             self.currentTime = utime.time()
