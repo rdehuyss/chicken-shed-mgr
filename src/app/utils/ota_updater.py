@@ -68,7 +68,11 @@ class OTAUpdater:
         
         This method expects an active internet connection and allows you to decide yourself
         if you want to install the latest version. It is necessary to run it directly after boot 
-        (for memory reasons) and will restart the microcontroller if a new version is found.
+        (for memory reasons) and you need to restart the microcontroller if a new version is found.
+
+        Returns
+        -------
+            bool: true if a new version is available, false otherwise
         """
 
         (current_version, latest_version) = self._check_for_new_version()
@@ -165,7 +169,7 @@ class OTAUpdater:
         else:
             self._copy_directory(self.modulepath(self.new_version_dir), self.modulepath(self.main_dir))
             self._rmtree(self.modulepath(self.new_version_dir))
-        print('Update installed, will reboot now')
+        print('Update installed, please reboot now')
 
     def _rmtree(self, directory):
         for entry in os.ilistdir(directory):
