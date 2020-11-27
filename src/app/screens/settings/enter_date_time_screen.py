@@ -11,10 +11,10 @@ class EditDateTimeScreen(AbstractScreen):
         lcd.print('Setup date & time', lcd.CENTER, 85)
 
         self._initDateTimeEditors()
-        self._printDate()
-        self._printTime()
+        self._print((75, 125), self._dateTimeEditors[0], self._dateTimeEditors[1], self._dateTimeEditors[2], '-')
+        self._print((95, 165), self._dateTimeEditors[3], self._dateTimeEditors[4], self._dateTimeEditors[5], ':')
 
-        self. self._dateTimeEditors[0].startEditing(self)
+        self._dateTimeEditors[0].startEditing(self)
 
     def hide(self):
         super().hide()
@@ -34,31 +34,19 @@ class EditDateTimeScreen(AbstractScreen):
                 NumberEditor(5, currentDateTime[5], 0, 59, '{:02d}')
             ]
         else:
-            self._dateTimeEditors[0].value = currentDateTime[0]
-            self._dateTimeEditors[1].value = currentDateTime[1]
-            self._dateTimeEditors[2].value = currentDateTime[2]
-            self._dateTimeEditors[3].value = currentDateTime[3]
-            self._dateTimeEditors[4].value = currentDateTime[4]
-            self._dateTimeEditors[5].value = currentDateTime[5]
+            for i in range(len(self._dateTimeEditors)):
+                self._dateTimeEditors[i].value = currentDateTime[i]
 
-    def _printDate(self):
-        lcd.setCursor(75, 125)
-        self._dateTimeEditors[0].printToLcd()
-        lcd.print('-')
-        self._dateTimeEditors[1].printToLcd()
-        lcd.print('-')
-        self._dateTimeEditors[2].printToLcd()
-
-    def _printTime(self):
-        lcd.setCursor(95, 165)
-        self._dateTimeEditors[3].printToLcd()
-        lcd.print(':')
-        self._dateTimeEditors[4].printToLcd()
-        lcd.print(':')
-        self._dateTimeEditors[5].printToLcd()
+    def _print(self, cursor, editor1, editor2, editor3, separator):
+        lcd.setCursor(cursor[0], cursor[1])
+        editor1.printToLcd()
+        lcd.print(separator)
+        editor2.printToLcd()
+        lcd.print(separator)
+        editor3.printToLcd()
 
     def editingDone(self, numberEditor:NumberEditor):
-        if numberEditor.nbr < 6:
+        if numberEditor.nbr < 5:
             self._dateTimeEditors[numberEditor.nbr + 1].startEditing(self)
         else:
             rtc = machine.RTC()

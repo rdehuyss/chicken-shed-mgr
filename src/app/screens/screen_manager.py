@@ -20,5 +20,4 @@ class ScreenManager:
         if ScreenManager.__activeScreen != None:
             ScreenManager.__activeScreen = None
         previous_screen = ScreenManager.pop()
-        print(previous_screen)
         previous_screen.show()
