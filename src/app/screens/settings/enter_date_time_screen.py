@@ -10,10 +10,11 @@ class EditDateTimeScreen(AbstractScreen):
         super().show()
         lcd.print('Setup date & time', lcd.CENTER, 85)
 
+        self._initDateTimeEditors()
         self._printDate()
         self._printTime()
 
-        self._year.startEditing(self)
+        self. self._dateTimeEditors[0].startEditing(self)
 
     def hide(self):
         super().hide()
@@ -21,65 +22,48 @@ class EditDateTimeScreen(AbstractScreen):
         buttonB.wasPressed(None)
         buttonC.wasPressed(None)
 
+    def _initDateTimeEditors(self):
+        currentDateTime = utime.localtime()
+        if not hasattr(self, '_dateTimeEditors'):
+            self._dateTimeEditors = [
+                NumberEditor(0, currentDateTime[0], 2020, 2050, '{:04d}'),
+                NumberEditor(1, currentDateTime[1], 1, 12, '{:02d}'),
+                NumberEditor(2, currentDateTime[2], 1, 31, '{:02d}'),
+                NumberEditor(3, currentDateTime[3], 0, 23, '{:02d}'),
+                NumberEditor(4, currentDateTime[4], 0, 59, '{:02d}'),
+                NumberEditor(5, currentDateTime[5], 0, 59, '{:02d}')
+            ]
+        else:
+            self._dateTimeEditors[0].value = currentDateTime[0]
+            self._dateTimeEditors[1].value = currentDateTime[1]
+            self._dateTimeEditors[2].value = currentDateTime[2]
+            self._dateTimeEditors[3].value = currentDateTime[3]
+            self._dateTimeEditors[4].value = currentDateTime[4]
+            self._dateTimeEditors[5].value = currentDateTime[5]
+
     def _printDate(self):
-        yearValue = 2020
-        monthValue = 11
-        dateValue = 7
-
-        currentTime = utime.localtime()
-        if currentTime[0] > 2000:
-            yearValue = currentTime[0]
-            monthValue = currentTime[1]
-            dateValue = currentTime[2]
-
-        self._year = NumberEditor(1, yearValue, 2020, 2050, '{:04d}')
-        self._month = NumberEditor(2, monthValue, 1, 12, '{:02d}')
-        self._date = NumberEditor(3, dateValue, 1, 31, '{:02d}')
-
         lcd.setCursor(75, 125)
-        self._year.printToLcd()
+        self._dateTimeEditors[0].printToLcd()
         lcd.print('-')
-        self._month.printToLcd()
+        self._dateTimeEditors[1].printToLcd()
         lcd.print('-')
-        self._date.printToLcd()
+        self._dateTimeEditors[2].printToLcd()
 
     def _printTime(self):
-        hourValue = 9
-        minuteValue = 0
-        secondValue = 0
-        
-        currentTime = utime.localtime()
-        if currentTime[0] > 2000:
-            hourValue = currentTime[3]
-            minuteValue = currentTime[4]
-            secondValue = currentTime[5]
-
-        self._hour = NumberEditor(4, hourValue, 0, 23, '{:02d}')
-        self._minute = NumberEditor(5, minuteValue, 0, 59, '{:02d}')
-        self._second = NumberEditor(6, secondValue, 0, 59, '{:02d}')
-
         lcd.setCursor(95, 165)
-        self._hour.printToLcd()
+        self._dateTimeEditors[3].printToLcd()
         lcd.print(':')
-        self._minute.printToLcd()
+        self._dateTimeEditors[4].printToLcd()
         lcd.print(':')
-        self._second.printToLcd()
-
+        self._dateTimeEditors[5].printToLcd()
 
     def editingDone(self, numberEditor:NumberEditor):
-        if numberEditor.nbr == 1:
-            self._month.startEditing(self)
-        elif numberEditor.nbr == 2:
-            self._date.startEditing(self)
-        elif numberEditor.nbr == 3:
-            self._hour.startEditing(self)
-        elif numberEditor.nbr == 4:
-            self._minute.startEditing(self)
-        elif numberEditor.nbr == 5:
-            self._second.startEditing(self)
-        elif numberEditor.nbr == 6:
+        if numberEditor.nbr < 6:
+            self._dateTimeEditors[numberEditor.nbr + 1].startEditing(self)
+        else:
             rtc = machine.RTC()
-            rtc.init((self._year.value, self._month.value, self._date.value, self._hour.value, self._minute.value, self._second.value))
+            rtc.init((
+                self._dateTimeEditors[0].value, self._dateTimeEditors[1].value, self._dateTimeEditors[2].value, 
+                self._dateTimeEditors[3].value, self._dateTimeEditors[4].value, self._dateTimeEditors[5].value))
             super().back()
             return
-

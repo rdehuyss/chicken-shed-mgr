@@ -11,7 +11,7 @@ class LightControl:
         self._toggleTime = 0
 
     def evaluate(self):
-        if not kippenstalConfig.isLightScheduleEnabled() or self._kippenstal.currentTime < (self._toggleTime + 3600):
+        if not kippenstalConfig.isLightScheduleEnabled() or self._kippenstal.currentTime < (self._toggleTime + 900):
             return
 
         self.__evaluateLight('Light 1', self._light1, kippenstalConfig.getLight1From(), kippenstalConfig.getLight1To())
@@ -29,6 +29,7 @@ class LightControl:
             ulogging.info('LightControl - Lights Toggled Manually - Light 1 & 2 - off')
 
     def __evaluateLight(self, name:str, light:PCA9554Relay, fromTime:str, toTime:str):
+        #print('LightControl', name, 'from: ', fromTime, 'to: ', toTime, 'isOn: ', light.isOn())
         if self.__mustTurnOnLight(light, fromTime, toTime):
             light.on()
             ulogging.info('LightControl - {} - on'.format(name))
@@ -55,7 +56,7 @@ class LightControl:
         return False
 
     def __isInsideTimeRange(self, fromTime:str, toTime:str):
-        if fromTime <= self._kippenstal.currentHour and self._kippenstal.currentHour < toTime:
+        if fromTime <= self._kippenstal.currentHourMinute and self._kippenstal.currentHourMinute < toTime:
                 return True
         
         return False

@@ -69,7 +69,7 @@ class DoorOpener:
         openAtHour = int(kippenstalConfig.getDoorOpenAtHour())
         currentHour = int(self._kippenstal.currentHour)
 
-        return openAtHour <= currentHour and not self._hasClosedForToday 
+        return openAtHour <= currentHour and self._kippenstal.isLight and not self._hasClosedForToday 
 
     def __mustCloseDoor(self):
         if self.isClosed():
