@@ -44,9 +44,9 @@ class Logger:
 
             logMsg = ''
             if self.name == 'root':
-                logMsg = "{} - {} - {}".format(utime.strftime('%H:%M:%S', utime.localtime()), levelname, msg)
+                logMsg = "{} - {} - {}".format(utime.strftime('%Y-%m-%d %H:%M:%S', utime.localtime()), levelname, msg)
             else:
-                logMsg = "{} - {}:{} - {}".format(utime.strftime('%H:%M:%S', utime.localtime()), levelname, self.name, msg)
+                logMsg = "{} - {}:{} - {}".format(utime.strftime('%Y-%m-%d %H:%M:%S', utime.localtime()), levelname, self.name, msg)
             
             print(logMsg)
             if 'logs.log' in os.listdir() and os.stat("logs.log")[6] > 64000:

@@ -9,10 +9,8 @@ class DoorOpener:
         self._kippenstal = kippenstal
         self._relayOpen = PCA9554Relay(kippenstal.i2c, kippenstalConfig.getDoorOpenerOpenRelay())
         self._relayClose = PCA9554Relay(kippenstal.i2c, kippenstalConfig.getDoorOpenerCloseRelay())
-        self._isMoving = False
         self._isOpen = False
         self._hasClosedForToday = False
-        self._timeDark = None
         self._timer = None
 
 
@@ -24,18 +22,14 @@ class DoorOpener:
             self._hasClosedForToday = False
 
         if self.__mustOpenDoor():
-            ulogging.info('DoorOpener - Opening door')
             self.open()
-            ulogging.info('DoorOpener - Door opened')
         elif self.__mustCloseDoor():
-            ulogging.info('DoorOpener - Closing door')
             self.close()
-            ulogging.info('DoorOpener - Door closed')
-            self._timeDark = None
 
     def open(self):
         if self.isOpen():
             return
+        ulogging.info('DoorOpener - Opening door')
         self._isOpen = True
         
         self.__stopMovement()
@@ -47,10 +41,11 @@ class DoorOpener:
     def close(self):
         if self.isClosed():
             return
-        
-        self._hasClosedForToday = True
+        ulogging.info('DoorOpener - Closing door')
+
         self.__stopMovement()
-        
+
+        self._hasClosedForToday = True
         self._relayClose.on()
         self._timer = Timer(3)
         self._timer.init(period=50000, mode=Timer.ONE_SHOT, callback=self.__stopClose)
@@ -65,7 +60,7 @@ class DoorOpener:
         return self._isOpen
 
     def isClosed(self):
-        return not self.isOpen()
+        return not self._isOpen
 
     def __mustOpenDoor(self):
         if self.isOpen():
@@ -81,14 +76,9 @@ class DoorOpener:
             return False
 
         closeAtHour = int(kippenstalConfig.getDoorCloseAtHour())
-        if self._timeDark == None:
-            if self._kippenstal.currentLightSensorValue < kippenstalConfig.getLightThreshold():
-                self._timeDark = self._kippenstal.currentTime
-        elif self._kippenstal.currentLightSensorValue > kippenstalConfig.getLightThreshold():
-            self._timeDark = None
-        elif int(self._kippenstal.currentHour) > 16 and self._kippenstal.currentTime > self._timeDark + closeAtHour * (60*60):
+        if int(self._kippenstal.currentHour) > 16 and self._kippenstal.isDark and self._kippenstal.currentTime > self._kippenstal.timeDark + closeAtHour * (60*60):
             return True
-
+            
         return False
 
     def __stopMovement(self):
@@ -97,18 +87,15 @@ class DoorOpener:
         if self._timer != None:
             self._timer.deinit()
             self._timer = None
-        
 
     def __stopOpen(self, timer):
-        self._relayOpen.off()
-        self._isMoving = False
-        self._timer.deinit()
+        self.__stopMovement()
+        ulogging.info('DoorOpener - Door opened')
 
     def __stopClose(self, timer):
-        self._relayClose.off()
-        self._isMoving = False
+        self.__stopMovement()
         self._isOpen = False
-        self._timer.deinit()
+        ulogging.info('DoorOpener - Door closed')
 
     def __str__(self):
         return 'DoorOpener - Door is {}'.format('open' if self.isOpen() else 'closed')

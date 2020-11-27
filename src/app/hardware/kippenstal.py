@@ -1,28 +1,29 @@
 import utime, app.ulogging as ulogging
-from machine import Timer, I2C
+from machine import I2C
 from .light_sensor import LightSensor
-from .light import Light
+from .light_control import LightControl
 from .fence import Fence, FenceConstants
 from .door_opener import DoorOpener
+from .kippenstal_config import kippenstalConfig
 
 class Kippenstal:
 
     def __init__(self):
         self.i2c = I2C(freq=400000, sda=21, scl=22)
+        self.isRunning = False
         self.lightSensor = LightSensor(self)
-        self.light = Light(self)
+        self.light = LightControl(self)
         self.fence = Fence(self)
         self.doorOpener = DoorOpener(self)
+        self.timeDark = None
         self.start()
 
     def start(self):
-        self.__watcher(None)
-        self._timer = Timer(2)
-        self._timer.init(period=60000, mode=Timer.PERIODIC, callback=self.__watcher)
+        self.isRunning = True
         ulogging.info('Kippenstal Mgr started')
 
     def stop(self):
-        self._timer.deinit()
+        self.isRunning = False
         ulogging.info('Kippenstal Mgr stopped')
 
     def status(self):
@@ -32,14 +33,25 @@ class Kippenstal:
         light_sensor_status = '\n\t- ' + str(self.lightSensor)
         ulogging.info('Kippenstal status' + door_status + fence_status + light_status + light_sensor_status)
 
-    def __watcher(self, timer):
-        self.currentTime = utime.time()
-        self.currentHour = "{}".format(utime.strftime('%H', utime.localtime()))
-        self.currentLightSensorValue = self.lightSensor.luminance()
+    def evaluate(self):
+        if self.isRunning:
+            self.currentTime = utime.time()
+            self.currentHour = "{}".format(utime.strftime('%H', utime.localtime()))
+            self.currentHourMinute = "{}".format(utime.strftime('%H:%M', utime.localtime()))
+            self.currentLightSensorValue = self.lightSensor.luminance()
+            self.isLight = self.__isItLight()
+            self.isDark = not self.isLight
 
-        self.light.evaluate()
-        self.doorOpener.evaluate()
-        self.fence.evaluate()
+            self.light.evaluate()
+            self.doorOpener.evaluate()
+            self.fence.evaluate()
 
+    def __isItLight(self):
+        isLight = self.currentLightSensorValue >= kippenstalConfig.getLightThreshold()
+        if isLight:
+            self.timeDark = None
+        elif self.timeDark == None:
+            self.timeDark = self.currentTime
+        return isLight
 
 kippenstal = Kippenstal()

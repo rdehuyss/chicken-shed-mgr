@@ -5,8 +5,11 @@ class KippenstalConfig:
     def __init__(self):
         self.__loadConfig()
 
-    def getLightRelay(self):
-        return self._config_data['light']['relay']
+    def getLight1Relay(self):
+        return self._config_data['light']['light1']['relay']
+    
+    def getLight2Relay(self):
+        return self._config_data['light']['light2']['relay']
 
     def isLightScheduleEnabled(self):
         return self._config_data['light']['schedule_enabled']
@@ -24,20 +27,36 @@ class KippenstalConfig:
             self._config_data['light']['threshold'] = value
             self.__save_config()
 
-    def getLightFromHour(self):
-        return self._config_data['light']['from_hour']
+    def getLight1From(self) -> str:
+        return self._config_data['light']['light1']['from']
 
-    def setLightFromHour(self, from_hour:int):
-        if from_hour != self.getLightFromHour():
-            self._config_data['light']['from_hour'] = from_hour
+    def setLight1From(self, fromTime:str):
+        if fromTime != self.getLight1From():
+            self._config_data['light']['light1']['from'] = fromTime
             self.__save_config()
 
-    def getLightToHour(self):
-        return self._config_data['light']['to_hour']
+    def getLight1To(self) -> str:
+        return self._config_data['light']['light1']['to']
 
-    def setLightToHour(self, to_hour:int):
-        if to_hour != self.getLightToHour():
-            self._config_data['light']['to_hour'] = to_hour
+    def setLight1To(self, toTime:str):
+        if toTime != self.getLight1To():
+            self._config_data['light']['light1']['to'] = toTime
+            self.__save_config()
+
+    def getLight2From(self) -> str:
+        return self._config_data['light']['light2']['from']
+
+    def setLight2From(self, fromTime:str):
+        if fromTime != self.getLight2From():
+            self._config_data['light']['light2']['from'] = fromTime
+            self.__save_config()
+
+    def getLight2To(self) -> str:
+        return self._config_data['light']['light2']['to']
+
+    def setLight2To(self, toTime:str):
+        if toTime != self.getLight2To():
+            self._config_data['light']['light2']['to'] = toTime
             self.__save_config()
 
     def getFenceRelay(self):

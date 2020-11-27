@@ -3,9 +3,9 @@ from m5stack import lcd, buttonA, buttonB, buttonC
 class NumberEditor:
 
     def __init__(self, nbr, value, min, max, format:str, suffix=''):
-        self.value = value
+        self.value = int(value)
         self.nbr = nbr
-        self._oldValue = value
+        self._oldValue = int(value)
         self._min = min
         self._max = max
         self._format = format
