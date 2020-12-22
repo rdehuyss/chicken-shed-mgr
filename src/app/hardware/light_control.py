@@ -28,6 +28,16 @@ class LightControl:
             self._light2.off()
             ulogging.info('LightControl - Lights Toggled Manually - Light 1 & 2 - off')
 
+    def on(self):
+        self._light1.on()
+        self._light2.on()
+        ulogging.info('LightControl - Lights Tested Manually - Light 1 & 2 - on')
+
+    def off(self):
+        self._light1.off()
+        self._light2.off()
+        ulogging.info('LightControl - Lights Tested Manually - Light 1 & 2 - off')
+
     def __evaluateLight(self, name:str, light:PCA9554Relay, fromTime:str, toTime:str):
         if self.__mustTurnOnLight(light, fromTime, toTime):
             light.on()

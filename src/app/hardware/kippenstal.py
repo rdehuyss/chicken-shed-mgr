@@ -1,5 +1,6 @@
 import utime, app.ulogging as ulogging
 from machine import I2C
+from .components.ds3231 import DS3231
 from .light_sensor import LightSensor
 from .light_control import LightControl
 from .fence import Fence, FenceConstants
@@ -16,6 +17,8 @@ class Kippenstal:
         self.fence = Fence(self)
         self.doorOpener = DoorOpener(self)
         self.timeDark = None
+        self.ds3231 = DS3231(self.i2c)
+        self.ds3231.get_time(set_rtc=True)
         self.start()
 
     def start(self):
@@ -46,5 +49,8 @@ class Kippenstal:
         elif self.timeDark == None:
             self.timeDark = self.currentTime
         return isLight
+
+    def saveTime(self):
+        self.ds3231.save_time()
 
 kippenstal = Kippenstal()

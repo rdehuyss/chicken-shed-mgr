@@ -53,5 +53,9 @@ class EditDateTimeScreen(AbstractScreen):
             rtc.init((
                 self._dateTimeEditors[0].value, self._dateTimeEditors[1].value, self._dateTimeEditors[2].value, 
                 self._dateTimeEditors[3].value, self._dateTimeEditors[4].value, self._dateTimeEditors[5].value))
+            
+            from ...hardware.kippenstal import kippenstal
+            kippenstal.saveTime()
+
             super().back()
             return

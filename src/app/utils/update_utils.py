@@ -51,8 +51,11 @@ class UpdateUtils:
     def _updateTimeUsingNTP():
         ulogging.info('Updating time...')
         import machine
+        from ..hardware.components.ds3231 import DS3231
         rtc = machine.RTC()
         rtc.ntp_sync(server="0.be.pool.ntp.org", tz="CET-1CEST,M3.5.0,M10.5.0/3")
+        ds3231 = DS3231(machine.I2C(freq=400000, sda=21, scl=22))
+        ds3231.save_time()
         ulogging.info('Updated time...')
 
     @staticmethod

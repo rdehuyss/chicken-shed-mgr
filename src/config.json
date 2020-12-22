@@ -1,19 +1,19 @@
 {
     "door_opener": {
-        "open_relay": 1,
-        "close_relay": 2,
+        "open_relay": 3,
+        "close_relay": 1,
         "schedule_enabled": true,
         "open_at_hour": 10,
         "close_at_hour_after_sunset": 1
     },
     "light": {
         "light1": {
-            "relay": 3,
+            "relay": 7,
             "from": "06:00",
             "to": "22:00"
         },
         "light2": {
-            "relay": 4,
+            "relay": 5,
             "from": "06:00",
             "to": "21:30"
         },
@@ -21,7 +21,7 @@
         "schedule_enabled": true
     },
     "fence": {
-        "relay": 5,
+        "relay": 0,
         "on_when": "on"
     } 
 }

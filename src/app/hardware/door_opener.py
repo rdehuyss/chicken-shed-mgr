@@ -12,6 +12,7 @@ class DoorOpener:
         self._isOpen = False
         self._hasClosedForToday = False
         self._timer = None
+        self.__stopMovement()
 
 
     def evaluate(self):
@@ -27,8 +28,6 @@ class DoorOpener:
             self.close()
 
     def open(self):
-        if self.isOpen():
-            return
         ulogging.info('DoorOpener - Opening door')
         self._isOpen = True
         
@@ -39,8 +38,6 @@ class DoorOpener:
         self._timer.init(period=50000, mode=Timer.ONE_SHOT, callback=self.__stopOpen)
 
     def close(self):
-        if self.isClosed():
-            return
         ulogging.info('DoorOpener - Closing door')
 
         self.__stopMovement()

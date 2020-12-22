@@ -37,6 +37,7 @@ class MainScreen(AbstractScreen):
         self._isSleeping = False
         self._lastInteraction = utime.time()
         self._showOptions()
+        self.update_clock()
         lcd.backlight(50)
 
     def _sleep(self):
