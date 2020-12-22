@@ -5,7 +5,7 @@ class UpdateUtils:
 
     @staticmethod
     def updateIfNecessary():
-        import machine, os, gc
+        import machine, os
         try:
             with open('.updateRequested', "r") as updateRequested:
                 pass
@@ -27,8 +27,6 @@ class UpdateUtils:
             print(error)
             ulogging.info('No update needed')
             pass
-
-        gc.collect()
 
     @staticmethod
     def _connectToWifi():
