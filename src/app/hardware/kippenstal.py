@@ -29,6 +29,9 @@ class Kippenstal:
         self.isRunning = False
         ulogging.info('Kippenstal Mgr stopped')
 
+    def getTemperature(self):
+        return self.ds3231.get_temperature()
+
     def evaluate(self):
         if self.isRunning:
             self.currentTime = utime.time()

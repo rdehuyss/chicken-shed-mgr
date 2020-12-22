@@ -57,4 +57,6 @@ class MainScreen(AbstractScreen):
                 lcd.textClear(90, 85, '                       ', lcd.WHITE)
                 lcd.setCursor(105, 85)
                 lcd.print("{}".format(utime.strftime('%H:%M:%S', utime.localtime())))
-        
+                lcd.setCursor(112, 115)
+                lcd.print("{} C".format(kippenstal.getTemperature()))
+
