@@ -52,13 +52,13 @@ class UpdateUtils:
     @staticmethod
     def _updateTimeUsingNTP():
         ulogging.info('Updating time...')
-        import machine
+        import machine, utime
         from ..hardware.components.ds3231 import DS3231
         rtc = machine.RTC()
-        rtc.ntp_sync(server="0.be.pool.ntp.org", tz="CET-1CEST,M3.5.0,M10.5.0/3")
+        rtc.ntp_sync(server="0.be.pool.ntp.org", tz="CET-1CEST-2,M3.5.0/02:00:00,M10.5.0/03:00:00")
         ds3231 = DS3231(machine.I2C(freq=400000, sda=21, scl=22))
         ds3231.save_time()
-        ulogging.info('Updated time...')
+        ulogging.info("Updated time to {}".format(utime.strftime('%H:%M:%S', utime.localtime())))
 
     @staticmethod
     def _otaUpdate():
